@@ -79,21 +79,25 @@ def get_e_features(filename):
     logger.warning(command)
     sys.exit(-1)
 
-def read_features(problemsList):
+def compute_features(problemsList,featureStyle):
     featureDict = {}
     maxVals = []
     minVals = []
     setUp = False
     #IS = open(problemsFile,'r')
     #problems = [line.strip() for line in IS]
+    if featureStyle == 'E':
+        featureFunction = get_e_features
+    else:
+        featureFunction = get_TPTP_features
     pool = Pool(processes = cpu_count())    
-    results = pool.map_async(get_e_features,problemsList)       
+    results = pool.map_async(featureFunction,problemsList)       
     pool.close()
     pool.join() 
     for problem,features in zip(problemsList,results.get()):
         if not setUp:
-            maxVals = features
-            minVals = features
+            maxVals = list(features)
+            minVals = list(features)
             setUp = True
         assert len(features) == len(maxVals)
         # Max/Min Values
@@ -103,7 +107,7 @@ def read_features(problemsList):
             if  features[i] < minVals[i]:
                 minVals[i] = features[i]
         # Update Dicts
-        featureDict[problem] = mat(features)    
+        featureDict[problem] = mat(features)
     return featureDict,maxVals,minVals
 
 def normalize(featureDict,maxVals,minVals):
