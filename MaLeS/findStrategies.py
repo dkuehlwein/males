@@ -68,15 +68,15 @@ if __name__ == '__main__':
             if not stratFile.endswith('.results'):
                 continue
             stratName = stratFile.split('.')[0]
-            oldStrategy = load_strategy(os.path.join(searchConfig.get('Search', 'TmpResultsDir'),stratName))
-            IS = open(os.path.join(searchConfig.get('Search', 'TmpResultsDir') ,stratFile),'r')
+            oldStrategy = load_strategy(os.path.join(searchConfig.get('Settings', 'TmpResultsDir'),stratName))
+            IS = open(os.path.join(searchConfig.get('Settings', 'TmpResultsDir') ,stratFile),'r')
             lines = IS.readlines()
             IS.close()            
             for line in lines[1:]:
                 oldStrategy.solvedProblems[line.split()[0]] = float(line.split()[1])   
             oldStrategies.append(oldStrategy)
         # Load old data. 
-        IS = open(searchConfig.get('Search', 'TmpResultsPickle') ,'r')        
+        IS = open(searchConfig.get('Settings', 'TmpResultsPickle') ,'r')        
         _strategiesQueue,problems,Parameters,solvedProblems,_triedStrategies = load(IS)
         IS.close()
         # Find bestStrategies and only use them.
