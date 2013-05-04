@@ -4,8 +4,9 @@ Created on May 2, 2013
 @author: Daniel Kuehlwein
 '''
 
-import copy,os,ConfigParser
+import copy,os,ConfigParser,numpy
 from RunATP import RunATP
+from CrossValidation import cross_validate
 
 def create_E_string(parameters):
     parameterList = []
@@ -69,7 +70,14 @@ class Strategy(object):
         for param,val in params:
             self.parameters[param] = val
         self.runForFullTime = False
-        self.runBefore = False            
+        self.runBefore = False
+        # Model fields    
+        self.weights = None
+        self.KM = None
+        self.labels = None
+        self.trainIndices = None
+        self.bestKernelMatrixIndex = None
+        self.minDataPoints = 5        
 
     def to_string(self):
         string = ''
@@ -123,7 +131,73 @@ class Strategy(object):
         return dict(self.__dict__)
 
     def __setstate__(self, d):
-        self.__dict__.update(d)             
+        self.__dict__.update(d)      
+        
+    def create_model(self,trainProblems,KMs,regParams,cv,cvFolds):        
+        self.trainIndices = []
+        localLabels = []
+        # Only learn from problem that can be solved
+        for index,problemName in enumerate(trainProblems):
+            if problemName in self.solvedProblems:
+                self.trainIndices.append(index)
+                localLabels.append(self.solvedProblems[problemName])
+        self.labels = numpy.mat(localLabels).T
+        # If there is not enough data, there is nothing to learn.
+        if self.labels.shape[0] < self.minDataPoints: 
+            self.bestKernelMatrixIndex = 0           
+            return
+        if cv:
+            # Reduce KMs
+            localKMs = []
+            for KM in KMs:
+                localKMs.append(KM[numpy.ix_(self.trainIndices,self.trainIndices)])
+            bestKernelMatrixIndex,bestRegParam = cross_validate(self.labels,localKMs,cvFolds,regParams)
+            self.bestKernelMatrixIndex = bestKernelMatrixIndex
+            self.KM = localKMs[bestKernelMatrixIndex]            
+        else:
+            self.KM = KMs[0][numpy.ix_(self.trainIndices,self.trainIndices)] 
+            self.bestKernelMatrixIndex = 0
+            bestRegParam = regParams[0]
+        # Add regularization
+        for i in range(self.KM.shape[0]):
+            self.KM[i,i] += bestRegParam 
+            
+        # Compute weights
+        self.weights = self.KM.I * self.labels
+    
+    def update_model(self,newTrainProblemsWithOldIndices,oldIndicesToNewIndicesDict):
+        deleteStrat = False
+        # Delete all newly solved problems from the training data.        
+        newTrainProblemsWithOldIndices = set(newTrainProblemsWithOldIndices)        
+        localTrainIndices = []
+        sliceIndices = []
+        for position,index in enumerate(self.trainIndices):
+            if index in newTrainProblemsWithOldIndices:
+                localTrainIndices.append(oldIndicesToNewIndicesDict[index])
+                sliceIndices.append(position)
+        if len(sliceIndices) == 0:
+                deleteStrat = True 
+                return deleteStrat
+        self.labels = self.labels[numpy.ix_(sliceIndices,[0])]
+        self.trainIndices = localTrainIndices        
+        if self.labels.shape[0] < 5:
+            self.KM = None
+            self.weighs = None            
+        else:
+            self.KM = self.KM[numpy.ix_(sliceIndices,sliceIndices)]
+            self.weights = self.KM.I * self.labels
+        return deleteStrat
+
+    
+    def predict(self,testKM):
+        # If there is not enough data, return the maximal time.
+        if self.labels.shape[0] < self.minDataPoints:
+            return max(self.solvedProblems.itervalues())
+        localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
+        returnVal = float(localTestKM*self.weights)
+        if returnVal < 0.1:
+            returnVal = 0.1
+        return returnVal               
         
         
     
