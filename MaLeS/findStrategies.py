@@ -113,7 +113,7 @@ if __name__ == '__main__':
         solvedProblems = set([])
         # Define problems
         # TODO: DEBUG ONLY
-        problems = getAllProblems(searchConfig.get('Search', 'Problems'))[-9:]
+        problems = getAllProblems(searchConfig.get('Search', 'Problems'))[-3:]
         
         # Load Strategies
         strategiesQueue = deque()        
