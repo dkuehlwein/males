@@ -7,9 +7,18 @@ Created on May 2, 2013
 import copy,os,ConfigParser
 from RunATP import RunATP
 
-def create_E_string():
-    #baseDir = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    return 'foo'
+def create_E_string(parameters):
+    parameterList = []
+    for param,val in sorted(parameters.items()):
+        if val == False:
+            continue
+        elif param.startswith('--') and val == True:
+            parameterList.append(param)
+        elif param.startswith('--'):
+            parameterList.append('='.join([param,val]))
+        else:
+            parameterList.append(''.join([param,val]))
+    return ' '.join(parameterList)
 
 def create_satallax_string(binary,name,parameters,runBefore):    
     if not runBefore:
@@ -76,8 +85,8 @@ class Strategy(object):
             strategyString = create_satallax_string(atpConfig.get('ATP Settings','binary'),self.name,self.parameters,self.runBefore)
             self.runBefore = True
         if (atpConfig.get('ATP Settings','strategy')=='E'):
-            strategyString = create_E_string(self.name,self.parameters)
-            strategyString = self.to_string() + ' -R'
+            strategyString = create_E_string(self.parameters) + atpConfig.get('ATP Settings','default')
+            #strategyString = self.to_string() + ' -R'
         if problem.bestTime == None or self.runForFullTime:
             time = runTime
         else:
