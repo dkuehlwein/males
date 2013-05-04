@@ -9,7 +9,7 @@ Created on May 2, 2013
 
 import os,logging,sys,argparse,ConfigParser
 from Parameters import Parameters
-from SearchStrat import Strategy,load_strategy
+from SearchStrategy import Strategy,load_strategies
 from collections import deque
 from Problem import getAllProblems
 from cPickle import dump,load  
@@ -63,18 +63,8 @@ if __name__ == '__main__':
     if searchConfig.getboolean('Search', 'TryWithNewDefaultTime'):
         logger.info('Trying with a new default time.')
         # Load all strategies
-        oldStrategies = []
-        for stratFile in os.listdir(searchConfig.get('Settings', 'TmpResultsDir') ):
-            if not stratFile.endswith('.results'):
-                continue
-            stratName = stratFile.split('.')[0]
-            oldStrategy = load_strategy(os.path.join(searchConfig.get('Settings', 'TmpResultsDir'),stratName))
-            IS = open(os.path.join(searchConfig.get('Settings', 'TmpResultsDir') ,stratFile),'r')
-            lines = IS.readlines()
-            IS.close()            
-            for line in lines[1:]:
-                oldStrategy.solvedProblems[line.split()[0]] = float(line.split()[1])   
-            oldStrategies.append(oldStrategy)
+        oldStrategies = load_strategies(searchConfig.get('Settings', 'TmpResultsDir'))
+
         # Load old data. 
         IS = open(searchConfig.get('Settings', 'TmpResultsPickle') ,'r')        
         _strategiesQueue,problems,Parameters,solvedProblems,_triedStrategies = load(IS)

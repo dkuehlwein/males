@@ -6,8 +6,8 @@ Created on May 3, 2013
 '''
 
 import os,argparse,sys,logging,itertools,ConfigParser
-#from Strategy import Strategy
-from readData import read_features,normalize,load_data,dump_data
+from SearchStrategy import load_strategies
+from readData import compute_features,normalize,load_data,dump_data
 from createMatrix import create_application_matrix_star
 from multiprocessing import Pool,cpu_count,Manager
 
@@ -90,18 +90,7 @@ if __name__ == '__main__':
     else:
         # Load Strategies
         logger.info("Parsing Strategy Files.")
-        tmpStrategies = []
-        for stratFile in sorted(os.listdir(config.get('Settings', 'ResultsDir') )):
-        #for stratFile in os.listdir(config.get('Settings', 'ResultsDir') ):
-            if stratFile.startswith('.'):
-                continue
-            IS = open(os.path.join(config.get('Settings', 'ResultsDir') ,stratFile),'r')
-            lines = IS.readlines()
-            IS.close()
-            strategy = Strategy(stratFile,lines[0].strip(),config.get('Learn', 'Time') )
-            for line in lines[1:]:
-                strategy.solvedProblems[line.split()[0]] = float(line.split()[1])+config.get('Learn', 'CPU Bias')    
-            tmpStrategies.append(strategy)     
+        tmpStrategies = load_strategies(config.get('Settings', 'ResultsDir'),config.get('Learn', 'CPU Bias'))  
     
         logger.info("Deleting dominated strategies.")
         # Get best times
@@ -130,7 +119,7 @@ if __name__ == '__main__':
         logger.info("Getting starting strategies..")
         startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=startTime,number=config.get('Learn', 'StartStrategies') )
         
-        # Delete all problem that were solved by startStrategies and all strategies that solve non of the leftover problems.
+        # Delete all problem that were solved by startStrategies and all strategies that solve none of the leftover problems.
         logger.info("Deleting all solved problems.")
         manager = Manager()    
         strategies = manager.list([])
@@ -152,7 +141,7 @@ if __name__ == '__main__':
             featureDict,minVals,maxVals = load_data(config.get('Learn', 'FeatureFile') )
         else:
             logger.info('Creating feature Dict.')
-            featureDict,maxVals,minVals = read_features(notSolvedYet)
+            featureDict,maxVals,minVals = compute_features(notSolvedYet,config.getboolean('Settings', 'Features'))
             featureDict = normalize(featureDict,maxVals,minVals)
             #"""        
             # TODO: HACK!
