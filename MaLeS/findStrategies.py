@@ -9,7 +9,7 @@ Created on May 2, 2013
 
 import os,logging,sys,argparse,ConfigParser
 from Parameters import Parameters
-from SearchStrategy import Strategy,load_strategies
+from Strategy import Strategy,load_strategies
 from collections import deque
 from Problem import getAllProblems
 from cPickle import dump,load  

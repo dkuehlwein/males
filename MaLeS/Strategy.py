@@ -78,6 +78,7 @@ class Strategy(object):
         self.trainIndices = None
         self.bestKernelMatrixIndex = None
         self.minDataPoints = 5        
+        self.minRunTime = 0.1
 
     def to_string(self):
         string = ''
@@ -180,7 +181,7 @@ class Strategy(object):
                 return deleteStrat
         self.labels = self.labels[numpy.ix_(sliceIndices,[0])]
         self.trainIndices = localTrainIndices        
-        if self.labels.shape[0] < 5:
+        if self.labels.shape[0] < self.minDataPoints:
             self.KM = None
             self.weighs = None            
         else:
@@ -195,8 +196,8 @@ class Strategy(object):
             return max(self.solvedProblems.itervalues())
         localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
         returnVal = float(localTestKM*self.weights)
-        if returnVal < 0.1:
-            returnVal = 0.1
+        if returnVal < self.minRunTime:
+            returnVal = self.minRunTime
         return returnVal               
         
         

@@ -6,7 +6,7 @@ Created on May 3, 2013
 '''
 
 import os,argparse,sys,logging,itertools,ConfigParser
-from SearchStrategy import load_strategies
+from Strategy import load_strategies
 from readData import compute_features,normalize,load_data,dump_data
 from createMatrix import create_application_matrix_star
 from multiprocessing import Pool,cpu_count,Manager
@@ -117,7 +117,7 @@ if __name__ == '__main__':
                 
         # Get start strategies
         logger.info("Getting starting strategies..")
-        startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=startTime,number=config.get('Learn', 'StartStrategies') )
+        startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=config.get('Learn', 'StartStrategiesTime'),number=config.get('Learn', 'StartStrategies') )
         
         # Delete all problem that were solved by startStrategies and all strategies that solve none of the leftover problems.
         logger.info("Deleting all solved problems.")
