@@ -33,7 +33,7 @@ def get_TPTP_features(filename):
         logger.warning('Cannot find problem file. Aborting.')
         sys.exit(-1)        
     command = "%s/bin/MakeListStats %s" % (path,filename)
-    print command
+    #print command
     args = shlex.split(command)
     p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout    
     lines = p.readlines()
@@ -79,6 +79,18 @@ def get_e_features(filename):
     logger.warning(command)
     sys.exit(-1)
 
+def get_normalized_features(problemFile,featureStyle,minVals,maxVals):
+    if featureStyle == 'E':
+        featureFunction = get_e_features
+    else:
+        featureFunction = get_TPTP_features    
+    problemFeatures = featureFunction(problemFile)
+    for i in range(len(problemFeatures)):
+        if not maxVals[i] == minVals[i]:
+            problemFeatures[i] = (problemFeatures[i] - minVals[i]) / (maxVals[i] - minVals[i]) 
+    normalizedFeatures = mat(problemFeatures)
+    return normalizedFeatures
+
 def compute_features(problemsList,featureStyle):
     featureDict = {}
     maxVals = []
@@ -94,6 +106,7 @@ def compute_features(problemsList,featureStyle):
     results = pool.map_async(featureFunction,problemsList)       
     pool.close()
     pool.join() 
+    print 'XXXX Features computed'
     for problem,features in zip(problemsList,results.get()):
         if not setUp:
             maxVals = list(features)
@@ -110,7 +123,7 @@ def compute_features(problemsList,featureStyle):
         featureDict[problem] = mat(features)
     return featureDict,maxVals,minVals
 
-def normalize(featureDict,maxVals,minVals):
+def normalize_featureDict(featureDict,maxVals,minVals):
     for key in featureDict.keys():
         keyF = featureDict[key]
         for i in range(keyF.shape[1]):
@@ -121,4 +134,6 @@ def normalize(featureDict,maxVals,minVals):
             assert keyF[0,i] <= 1
             assert keyF[0,i] >= 0
     return featureDict
+
+
 

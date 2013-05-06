@@ -7,7 +7,7 @@ Created on May 3, 2013
 
 import os,argparse,sys,logging,itertools,ConfigParser
 from Strategy import load_strategies
-from readData import compute_features,normalize,load_data,dump_data
+from readData import compute_features,normalize_featureDict,load_data,dump_data
 from createMatrix import create_application_matrix_star
 from multiprocessing import Pool,cpu_count,Manager
 
@@ -16,8 +16,8 @@ parser = argparse.ArgumentParser(description='Strategy Finder 1.1 --- May 2013.'
 parser.add_argument('--Setup', default = '../setup.ini',  
                    help='The ini file with the learn parameters.')
 
-def apply_strat((strategy,notSolvedYet,KMs,regGrid,cv)):
-    strategy.create_model(notSolvedYet,KMs,regGrid,cv)    
+def apply_strat((strategy,notSolvedYet,KMs,regGrid,cv,cvFolds)):
+    strategy.create_model(notSolvedYet,KMs,regGrid,cv,cvFolds)    
     return strategy
 
 def greedy_startStrategies(strategies,runTime=1.0,number=10):
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     else:
         # Load Strategies
         logger.info("Parsing Strategy Files.")
-        tmpStrategies = load_strategies(config.get('Settings', 'ResultsDir'),config.get('Learn', 'CPU Bias'))  
+        tmpStrategies = load_strategies(config.get('Settings', 'ResultsDir'),config.getfloat('Learn', 'CPU Bias'))  
     
         logger.info("Deleting dominated strategies.")
         # Get best times
@@ -108,7 +108,7 @@ if __name__ == '__main__':
                 if bestStrats.has_key(p):
                     bestTime = bestTimes[p]
                     solvedByBest = len(bestStrats[p].solvedProblems)
-                    if t < bestTime + config.get('Learn', 'Tolerance')  and solvedByBest < len(s.solvedProblems):
+                    if t < bestTime + config.getfloat('Learn', 'Tolerance')  and solvedByBest < len(s.solvedProblems):
                         bestStrats[p] = s
                 else:
                     bestStrats[p] = s
@@ -117,7 +117,7 @@ if __name__ == '__main__':
                 
         # Get start strategies
         logger.info("Getting starting strategies..")
-        startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=config.get('Learn', 'StartStrategiesTime'),number=config.get('Learn', 'StartStrategies') )
+        startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=config.getfloat('Learn', 'StartStrategiesTime'),number=config.getint('Learn', 'StartStrategies') )
         
         # Delete all problem that were solved by startStrategies and all strategies that solve none of the leftover problems.
         logger.info("Deleting all solved problems.")
@@ -136,13 +136,14 @@ if __name__ == '__main__':
             notSolvedYet[i] = p
         #"""
         # Load Problem Features
-        if os.path.exists(config.get('Learn', 'FeatureFile') ) and not config.getboolean('Settings', 'Clear') :
+        if os.path.exists(config.get('Learn', 'FeaturesFile') ) and not config.getboolean('Settings', 'Clear') :
             logger.info('Loading featureFile')
-            featureDict,minVals,maxVals = load_data(config.get('Learn', 'FeatureFile') )
+            featureDict,minVals,maxVals = load_data(config.get('Learn', 'FeaturesFile') )
         else:
             logger.info('Creating feature Dict.')
-            featureDict,maxVals,minVals = compute_features(notSolvedYet,config.getboolean('Settings', 'Features'))
-            featureDict = normalize(featureDict,maxVals,minVals)
+            featureDict,maxVals,minVals = compute_features(notSolvedYet,config.get('Learn', 'Features'))
+            print 'normalizing'
+            featureDict = normalize_featureDict(featureDict,maxVals,minVals)
             #"""        
             # TODO: HACK!
             aaa = {}
@@ -156,7 +157,7 @@ if __name__ == '__main__':
                 notSolvedYet[i] = p
             # HACK END
             #"""
-            dump_data((featureDict,minVals,maxVals),config.get('Learn', 'FeatureFile') )
+            dump_data((featureDict,minVals,maxVals),config.get('Learn', 'FeaturesFile') )
             logger.info('Done') 
         
         # Create joint kernel matrices
@@ -176,10 +177,11 @@ if __name__ == '__main__':
                                                          itertools.repeat(notSolvedYet),\
                                                          itertools.repeat(KMs),\
                                                          itertools.repeat(regGrid),\
-                                                         itertools.repeat(config.getboolean('Learn', 'CrossValidate'))))
+                                                         itertools.repeat(config.getboolean('Learn', 'CrossValidate')),\
+                                                         itertools.repeat(config.getint('Learn', 'CrossValidationFolds'))))
         pool.close()
         pool.join()  
-        dump_data((startStrategies,startTime,strategies,notSolvedYet,kernelGrid),config.get('Learn', 'StrategiesFile') )
+        dump_data((startStrategies,config.getfloat('Learn', 'StartStrategiesTime'),strategies,notSolvedYet,kernelGrid),config.get('Learn', 'StrategiesFile') )
     logger.info('All Done.')    
                      
                      

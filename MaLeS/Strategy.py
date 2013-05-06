@@ -78,7 +78,6 @@ class Strategy(object):
         self.trainIndices = None
         self.bestKernelMatrixIndex = None
         self.minDataPoints = 5        
-        self.minRunTime = 0.1
 
     def to_string(self):
         string = ''
@@ -196,8 +195,6 @@ class Strategy(object):
             return max(self.solvedProblems.itervalues())
         localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
         returnVal = float(localTestKM*self.weights)
-        if returnVal < self.minRunTime:
-            returnVal = self.minRunTime
         return returnVal               
         
         
