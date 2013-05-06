@@ -32,7 +32,7 @@ def get_TPTP_features(filename):
     if not os.path.isfile(filename):
         logger.warning('Cannot find problem file. Aborting.')
         sys.exit(-1)        
-    command = "%s/bin/MakeListStats %s" % (path,filename)
+    command = "%s/bin/TPTP_features -i %s" % (path,filename)
     #print command
     args = shlex.split(command)
     p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout    
@@ -42,9 +42,10 @@ def get_TPTP_features(filename):
         line = line.split()
         for word in line:
             try: 
-                features.append(int(word))
+                features.append(float(word))
             except:
-                continue                
+                continue   
+    #print features
     if (len(features)> 0):
         return features
     logger.warning('Could not compute features. Try running:')
@@ -106,7 +107,6 @@ def compute_features(problemsList,featureStyle):
     results = pool.map_async(featureFunction,problemsList)       
     pool.close()
     pool.join() 
-    print 'XXXX Features computed'
     for problem,features in zip(problemsList,results.get()):
         if not setUp:
             maxVals = list(features)

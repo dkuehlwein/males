@@ -141,8 +141,7 @@ if __name__ == '__main__':
             featureDict,minVals,maxVals = load_data(config.get('Learn', 'FeaturesFile') )
         else:
             logger.info('Creating feature Dict.')
-            featureDict,maxVals,minVals = compute_features(notSolvedYet,config.get('Learn', 'Features'))
-            print 'normalizing'
+            featureDict,maxVals,minVals = compute_features(notSolvedYet,config.get('Learn', 'Features'))            
             featureDict = normalize_featureDict(featureDict,maxVals,minVals)
             #"""        
             # TODO: HACK!
