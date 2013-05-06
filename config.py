@@ -36,7 +36,7 @@ config.add_section('Learn')
 config.set('Learn','Time','10')
 config.set('Learn','MaxTime','300')
 config.set('Learn','Features','E') # or TPTP
-config.set('Learn','FeatureFile',os.path.join(path,'tmp','features.pickle'))
+config.set('Learn','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
 config.set('Learn','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
 config.set('Learn','ModelsFile',os.path.join(path,'tmp','models.pickle'))
 config.set('Learn','RegularizationGrid','0.25,0.5,1,2,4,8,16,32,64')
@@ -47,6 +47,15 @@ config.set('Learn','StartStrategies','10')
 config.set('Learn','StartStrategiesTime','1.0')
 config.set('Learn','CPU Bias','0.3')
 config.set('Learn','Tolerance','0.3')
+
+config.add_section('Run')
+config.set('Run','CPUSpeedRatio','1.0')
+config.set('Run','MinRunTime','0.1')
+config.set('Run','PauseProver','False')
+config.set('Run','Features','E') # or TPTP
+config.set('Run','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
+config.set('Run','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
+config.set('Run','OutputFile','None')
 
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'setup.ini')           
 with open(iniLocation, 'wb') as configfile:
