@@ -89,6 +89,8 @@ def get_normalized_features(problemFile,featureStyle,minVals,maxVals):
     for i in range(len(problemFeatures)):
         if not maxVals[i] == minVals[i]:
             problemFeatures[i] = (problemFeatures[i] - minVals[i]) / (maxVals[i] - minVals[i]) 
+        else:
+            problemFeatures[i] = 0
     normalizedFeatures = mat(problemFeatures)
     return normalizedFeatures
 

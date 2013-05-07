@@ -45,12 +45,10 @@ class RunATP(object):
         self.process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         self.pid = self.process.pid
         setitimer(ITIMER_REAL,self.runTime)
-        #print self.runTime
         try:
             stdout, _stderr = self.process.communicate()
             setitimer(ITIMER_REAL,0)
         except Alarm:
-            #print 'x'
             if self.pause:
                 self.start_pause()
             else:                

@@ -85,16 +85,19 @@ class Strategy(object):
             string += '%s-%s ' % (param,str(self.parameters[param]))
         return string            
 
-    def run(self,problem,runTime,atpConfig):
-        if self.solvedProblems.has_key(problem.location):
-            return True,self.solvedProblems[problem.location]
-        
+    def get_atp_string(self,atpConfig):
         if (atpConfig.get('ATP Settings','strategy')=='Satallax'):
             strategyString = create_satallax_string(atpConfig.get('ATP Settings','binary'),self.name,self.parameters,self.runBefore)
             self.runBefore = True
         if (atpConfig.get('ATP Settings','strategy')=='E'):
             strategyString = create_E_string(self.parameters) + atpConfig.get('ATP Settings','default')
+        return strategyString
+
+    def run(self,problem,runTime,atpConfig):
+        if self.solvedProblems.has_key(problem.location):
+            return True,self.solvedProblems[problem.location]        
             #strategyString = self.to_string() + ' -R'
+        strategyString = self.get_atp_string(atpConfig)
         if problem.bestTime == None or self.runForFullTime:
             time = runTime
         else:

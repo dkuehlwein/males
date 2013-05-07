@@ -6,8 +6,7 @@ Created on Aug 17, 2012
 from numpy import argsort,ix_
 from readData import load_data
 from Problem import getAllProblems
-#from emales import get_run_time,main
-from males import get_run_time,main
+from males import main
 from multiprocessing import Pool,cpu_count
 
 if __name__ == '__main__':
@@ -20,9 +19,9 @@ if __name__ == '__main__':
     problemsTest = getAllProblems(problemFileTest)    
     theorySolved = 0
     practiceSolved = 0
-    time = 300
+    time = 30
     timeBuffer = 1.0
-    solveable = 511
+    solveable = 516
     
     # Load data
     startStrategies,startTime,strategies,notSolvedYet,kernelGrid = load_data(stratFile)
@@ -60,22 +59,27 @@ if __name__ == '__main__':
             for bestStratIndex in sortedPredictions:
                 bestStrat = strategies[bestStratIndex]
                 #preferedRunTime = int(timeBuffer * predictions[bestStratIndex])+1
-                preferedRunTime = timeBuffer * predictions[bestStratIndex]
+                preferedRunTime = max(0.1,timeBuffer * predictions[bestStratIndex])
                 # a) if is wasn't tried before
                 if not alreadyTried.has_key(bestStrat.name):
                     alreadyTried[bestStrat.name] = 0
                     break
                 # b) if the earlier best runTime is less than the current runTime
                 if alreadyTried[bestStrat.name] < preferedRunTime:
-                    preferedRunTime -= alreadyTried[bestStrat.name] 
+                    # TODO: Activate this when pause is on
+                    #preferedRunTime -= alreadyTried[bestStrat.name]
                     break
             #print len(notSolvedYet),predictions[bestStratIndex],int(predictions[bestStratIndex])+1,bestStrat.name,alreadyTried.has_key(bestStrat.name),predictions
-            # Run strategy        
+            # Run strategy                    
             if timeLeft > preferedRunTime:
                 runTime = preferedRunTime                
             else:
                 runTime = timeLeft
+            
+            #print preferedRunTime, runTime
+            assert runTime > 0
             timeLeft = timeLeft - runTime
+            #print timeLeft
             
             #runTime,timeLeft = get_run_time(preferedRunTime,timeLeft)
             
@@ -118,9 +122,13 @@ if __name__ == '__main__':
         if solved:
             theorySolved += 1
     print 'Theory',len(notSolvedYetOrig),theorySolved,solveable
-    """
+    #"""
+    
     print 'starting practiceTrain'    
     args = [['-t',str(time),'-p',p.location] for p in problemsTrain]
+    #for x in args:
+    #    main(x)
+    #"""
     pool = Pool(processes = cpu_count())
     results = pool.map_async(main,args)       
     pool.close()
@@ -129,7 +137,9 @@ if __name__ == '__main__':
     results =  results.get()
     print "Solved/ NotSolved / Problems " 
     print len(results)-sum(results),sum(results),len(results)
+    #"""
 
+    """
     print 'starting practiceTest'    
     args = [['-t',str(time),'-p',p.location] for p in problemsTest]
     pool = Pool(processes = cpu_count())
@@ -140,4 +150,4 @@ if __name__ == '__main__':
     results =  results.get()
     print "Solved/ NotSolved / Problems " 
     print len(results)-sum(results),sum(results),len(results)
-    """
+    #"""

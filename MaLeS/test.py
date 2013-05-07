@@ -8,6 +8,72 @@ import ConfigParser,os
 from readData import get_TPTP_features, get_e_features,compute_features
 
 if __name__ == '__main__':
+    newfileplus = open('FOFeligible', 'w')
+    newfiledach = open('THFeligible', 'w')
+    
+    GuteDateienplus = []
+    GuteDateiendach = []
+    TolleDateien = []
+    
+    Ordner = os.listdir('/home/daniel/TPTP/TPTP-v5.4.0/Problems/')
+    #Liste mit Ordnern
+    for folder in Ordner:
+        Dateipfad = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/' + folder +'/'
+        #print Dateipfad
+    
+        dateien = os.listdir(Dateipfad)
+        #Liste mit Dateien in Ordner
+        for datei in dateien:
+            if ('+' or '^' in datei) and (not datei.endswith('.rm')) :
+                tolleDatei = Dateipfad + datei
+                #wenn + oder ^ vorkommt ist es eine tolle Datei :)
+                TolleDateien.append(tolleDatei)
+                #neue Liste mit dem ganzen Pfad zur Datei 
+        
+    #print TolleDateien
+            
+    for tolleDatei in TolleDateien:
+        Inputfile = open(tolleDatei, 'r')
+        lines = Inputfile.readlines()
+        
+        for line in lines:
+            if (line.startswith('% Rating')):
+                splits = line.split()
+                rating = splits[3]
+                #print rating
+    
+        if (rating is '?'):
+            if '+' in tolleDatei:
+                GuteDateienplus.append(tolleDatei)
+            if '^' in tolleDatei:
+                GuteDateiendach.append(tolleDatei)
+        else:
+            if (float(rating) > 0.21):
+                #print 'Gute Datei: ' + tolleDatei
+                if '+' in tolleDatei:
+                    GuteDateienplus.append(tolleDatei)
+                if '^' in tolleDatei:
+                    GuteDateiendach.append(tolleDatei)
+    
+    GuterStringplus=str(GuteDateienplus)
+    GuterStringdach=str(GuteDateiendach)
+    
+    import random
+    
+    pickedFOF = random.sample(set(GuteDateienplus),1000)
+    pickedTHF = random.sample(set(GuteDateiendach),1000)
+    
+    for x in pickedTHF:
+        newfiledach.write(x+'\n')
+    
+    for x in pickedFOF:
+        newfileplus.write(x+'\n')
+        
+    
+    newfileplus.close()
+    newfiledach.close()
+    Inputfile.close()     
+    
     """
     binary = '/home/daniel/TPTP/satallax-2.7/bin/satallax.opt'
     
@@ -48,7 +114,7 @@ if __name__ == '__main__':
     stratConfig.read('/home/daniel/workspace/MaLeS/resultsTmp/NewStrategy25')
     #"""
     
-    #"""
+    """
     x = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/PUZ/PUZ081^1.p'
     x1 = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/PUZ/PUZ001+1.p'
     
