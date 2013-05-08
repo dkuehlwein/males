@@ -69,7 +69,7 @@ class RunATP(object):
             # CNF Theorem 
             if line.startswith('# SZS status Unsatisfiable'):
                     proofFound = True
-            if line.startswith('# SZS status CounterSatisfiable'):
+            if line.startswith('# SZS status CounterSatisfiable') or line.startswith('% SZS status CounterSatisfiable'):
                     countersat = True
             """
             if line.startswith('# Total time'):

@@ -222,8 +222,15 @@ def main(argv = sys.argv[1:]):
         logger.debug("Done")
         
         # Update KMs            
+        allSolved = False
+        if newNotSolvedYetWithOldIndices == []:
+            allSolved = True
         for pKMi,pKM in enumerate(pKMs):
-            pKMs[pKMi] = pKM[ix_([0],newNotSolvedYetWithOldIndices)]
+            if not allSolved:
+                pKMs[pKMi] = pKM[ix_([0],newNotSolvedYetWithOldIndices)]
+            else:
+                pKMs[pKMi] = []
+        
 
     logger.info("SZS Status Timeout")
     for p in processDict.itervalues():
