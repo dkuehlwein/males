@@ -86,8 +86,8 @@ def main(argv = sys.argv[1:]):
                         filename=logFile,
                         filemode='w')
     console = logging.StreamHandler(outStream)
-    #console.setLevel(logging.INFO)
-    console.setLevel(logging.WARNING)
+    console.setLevel(logging.INFO)
+    #console.setLevel(logging.WARNING)
     formatter = logging.Formatter('%% %(message)s')
     console.setFormatter(formatter)    
     logger = logging.getLogger('males - %s' % args.problem)
@@ -180,8 +180,8 @@ def main(argv = sys.argv[1:]):
             sP = processDict[bestStrat.name]
             proofFound,_countersat,output,_time = sP.cont(runTime)        
         else:
-            strategyString = strategy.get_atp_string(atpConfig)
-            sP = RunATP(atpConfig.get('ATP Settings','binary'),strategyString,atpConfig.get('ATP Settings','time'),runTime,args.problem,maxTime=args.time)
+            bestStratString = bestStrat.get_atp_string(atpConfig)
+            sP = RunATP(atpConfig.get('ATP Settings','binary'),bestStratString,atpConfig.get('ATP Settings','time'),runTime,args.problem,maxTime=args.time)
 #            sP = RunE(args.problem,bestStrat.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
             if config.getboolean('Run', 'PauseProver'):
                 processDict[bestStrat.name] = sP    
