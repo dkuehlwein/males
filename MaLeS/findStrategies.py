@@ -22,9 +22,9 @@ mainPath = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__fi
 parser = argparse.ArgumentParser(description='Strategy Finder 1.1 --- May 2013.')
 parser.add_argument('--Setup', default = '../setup.ini',  
                    help='The ini file with the search parameters.')
-parser.add_argument('--ATP', default = '../Satallax/satallax.ini',  
+parser.add_argument('--ATP', default = '../E/E.ini',  
                    help='The ini file with the ATP parameters.')
-parser.add_argument('--Strategies', default = '../Satallax/strategies.ini',  
+parser.add_argument('--Strategies', default = '../E/strategies.ini',  
                    help='The ini file with the predefined strategies.')
 
 
@@ -103,7 +103,8 @@ if __name__ == '__main__':
         solvedProblems = set([])
         # Define problems
         # TODO: DEBUG ONLY
-        problems = getAllProblems(searchConfig.get('Search', 'Problems'))[-3:]
+        #problems = getAllProblems(searchConfig.get('Search', 'Problems'))[-3:]
+        problems = getAllProblems(searchConfig.get('Search', 'Problems'))
         
         # Load Strategies
         strategiesQueue = deque()        
@@ -131,7 +132,7 @@ if __name__ == '__main__':
         logger.info('Trying Strategy %s. %s strategies left in queue.' % (currentStrategy.name,len(strategiesQueue)))        
         logger.debug('Problem \t Proof Found \t Time Needed \t Best Time so far')   
         triedStrategies = triedStrategies.union([currentStrategy.to_string()])   
-        #run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
+        run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
         # Apply Strategy on all problems.
         #"""
         pool = Pool(processes = cpu_count()-1)

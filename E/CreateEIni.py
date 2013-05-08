@@ -23,11 +23,11 @@ config = ConfigParser.SafeConfigParser()
 config.optionxform = str
 
 config.add_section('ATP Settings')
-config.set('ATP Settings','binary',os.path.join(args.location,'bin','satallax.opt'))
-config.set('ATP Settings','time','-t')
+config.set('ATP Settings','binary',os.path.join(args.location,'eproof_ram'))
+config.set('ATP Settings','time','--cpu-limit=')
 config.set('ATP Settings','problem','')
 config.set('ATP Settings','strategy','E')
-config.set('ATP Settings','default','-R')
+config.set('ATP Settings','default','-s --memory-limit=Auto --tstp-format')
 
 config.add_section('Boolean Parameters')
 config.set('Boolean Parameters','--split-aggressive','False')
@@ -123,98 +123,46 @@ config.set('List Parameters','-W'," ".join(["NoSelection","NoGeneration","Select
              "SelectNewComplexAHPExceptRRHorn","PSelectNewComplexAHPExceptRRHorn","SelectNewComplexAHPExceptUniqMaxHorn","PSelectNewComplexAHPExceptUniqMaxHorn",\
              "SelectNewComplexAHPNS","SelectVGNonCR"]))
 
-"""
+
 # Parse defined modes and extract min/max values
-strategies = ConfigParser.SafeConfigParser()
-strategies.optionxform = str
-modesPath = os.path.join(args.location,'modes')
+strategiesConfig = ConfigParser.SafeConfigParser()
+strategiesConfig.optionxform = str
+modesPath = os.path.join('../results')
 modes = os.listdir(modesPath)
 for mode in modes:
-    strategies.add_section(mode)
-    modeFile = os.path.join(modesPath,mode)
-    lines = open(modeFile).readlines()
+    strategiesConfig.add_section(mode)    
+    params = open(os.path.join(modesPath,mode)).readlines()[0][1:]
     option = ''
-    expectingIntValue = False
-    expectingBoolValue = False
-    for line in lines:
-        if expectingIntValue:
-            expectingIntValue = False
-            val = int(line.strip())
-            minVal = config.getint('Int Min Parameters', option)
-            maxVal = config.getint('Int Max Parameters', option)            
-            if val < minVal:
-                minVal = val
-            if val > maxVal:
-                maxVal = val
-            config.set('Int Min Parameters',option,str(val))
-            config.set('Int Max Parameters',option,str(val))
-            strategies.set(mode,option,str(val))                    
-        if config.has_option('Int Def Parameters', line.strip()):
-            expectingIntValue = True
-            option = line.strip()
+    #print mode
+    #print params
+    for param in params.split():
+        if param.startswith('--'):
+            if len(param.split('=')) == 1:
+                option = param
+                value = 'True'
+                if param == '--tstp-in':
+                    continue
+                assert config.has_option('Boolean Parameters', param)
+            else:
+                option = param.split('=')[0]
+                value = param.split('=')[1]
+        elif param.startswith('-'):
+            option = param[:2]
+            value = param[2:]
+            if param == '-s':
+                continue
+            #print option, value
+            assert config.has_option('List Parameters', option)
+            possibleVals = (config.get('List Parameters', option)).split()             
+            assert value in possibleVals
+        else:
+            print 'Unknown parameter in %s' % mode
+        strategiesConfig.set(mode, option, value)
             
-        if expectingBoolValue:
-            expectingBoolValue = False
-            strategies.set(mode,option,line.strip())
-        if config.has_option('Boolean Parameters', line.strip()):
-            expectingBoolValue = True
-            option = line.strip()
 
-"""
- 
-iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'e.ini')           
+iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'E.ini')           
 with open(iniLocation, 'wb') as configfile:
     config.write(configfile)    
-#iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'strategies.ini')           
-#with open(iniLocation, 'wb') as configfile:
-#    strategies.write(configfile)
-
-"""
-config.set('List Parameters','-H',
-            "'(10*ConjectureRelativeSymbolWeight(ConstPrio,0.5,100,100,100,50,1.5,1.5,1.5),1*FIFOWeight(ConstPrio))' 
-            '(10*ConjectureSymbolWeight(ConstPrio,10,10,5,5,5,1.5,1.5,1.5),1*FIFOWeight(ConstPrio))'
-             '(1*Clauseweight(PreferProcessed,1,1,1),2*FIFOWeight(PreferProcessed))'
-             '(4*ConjectureGeneralSymbolWeight(SimulateSOS,100,100,100,50,50,50,50,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,100,100,100,50,50,1000,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(10*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),1*FIFOWeight(ConstPrio))'
-             '(1*FIFOWeight(ConstPrio),1*FIFOWeight(PreferProcessed),1*ConjectureRelativeSymbolWeight(PreferNonGoals,0.5,100,100,100,100,1.5,1.5,1),3*ConjectureRelativeSymbolWeight(SimulateSOS,0.5,100,100,100,100,1.5,1.5,1),10*Refinedweight(SimulateSOS,1,1,2,1.5,2))'
-             '(4*ConjectureRelativeSymbolWeight(SimulateSOS,0.5,100,100,100,100,1.5,1.5,1),1*ConjectureRelativeSymbolWeight(PreferNonGoals,0.5,100,100,100,100,1.5,1.5,1),10*Refinedweight(SimulateSOS,1,1,2,1.5,2),1*Refinedweight(PreferNonGoals,1,1,2,1.5,1.5),1*Clauseweight(PreferProcessed,1,1,1),2*FIFOWeight(PreferProcessed))'
-             '(6*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),1*FIFOWeight(ConstPrio),1*FIFOWeight(PreferProcessed),1*ConjectureRelativeSymbolWeight(PreferNonGoals,0.5,100,100,100,100,1.5,1.5,1))'
-             '(4*Refinedweight(SimulateSOS,1,1,2,1.5,2),3*Refinedweight(PreferNonGoals,1,1,2,1.5,1.5),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(1*FIFOWeight(PreferProcessed),1*FIFOWeight(ConstPrio),2*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5))'
-             '(1*FIFOWeight(ConstPrio),8*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),2*FIFOWeight(PreferProcessed))'
-             '(1*FIFOWeight(ConstPrio),4*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),1*Refinedweight(PreferNonGoals,1,1,2,1.5,1.5),2*FIFOWeight(PreferProcessed))'
-             '(1*Refinedweight(PreferNonGoals,1,1,2,1.5,1.5),10*Refinedweight(SimulateSOS,1,1,2,1.5,2),2*FIFOWeight(PreferProcessed),8*ConjectureRelativeSymbolWeight(SimulateSOS,0.5,100,100,100,100,1.5,1.5,1),1*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),1*FIFOWeight(ConstPrio))'
-             '(4*ConjectureRelativeSymbolWeight(SimulateSOS,0.5,100,100,100,100,1.5,1.5,1),3*ConjectureRelativeSymbolWeight(PreferNonGoals,0.5,100,100,100,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(1*ConjectureRelativeSymbolWeight(SimulateSOS,0.5,100,100,100,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),2*FIFOWeight(PreferProcessed))'
-             '(1*FIFOWeight(ConstPrio),2*FIFOWeight(PreferProcessed),1*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5))'
-             '(6*ConjectureRelativeSymbolWeight(SimulateSOS,0.5,100,100,100,100,1.5,1.5,1),1*FIFOWeight(ConstPrio),2*Refinedweight(SimulateSOS,1,1,2,1.5,2),2*Refinedweight(PreferNonGoals,1,1,2,1.5,1.5),2*FIFOWeight(PreferProcessed),10*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),3*ConjectureRelativeSymbolWeight(PreferNonGoals,0.5,100,100,100,100,1.5,1.5,1))'
-             '(4*ConjectureGeneralSymbolWeight(SimulateSOS,100,100,100,50,50,10,50,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,200,100,200,50,50,1,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(10*ConjectureGeneralSymbolWeight(PreferGroundGoals,100,100,100,50,50,10,50,1.5,1.5,1),1*Clauseweight(ConstPrio,1,1,1),1*Clauseweight(ByCreationDate,2,1,0.8))'
-             '(4*Refinedweight(SimulateSOS,1,1,2,1.5,2),3*Refinedweight(PreferNonGoals,1,1,2,1.5,1.5),2*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(1*RelevanceLevelWeight(ConstPrio,2,2,0,2,100,100,100,100,1.5,1.5,1))'
-             '(4*PNRefinedweight(PreferNonGoals,4,5,5,4,2,1,1),8*PNRefinedweight(PreferGoals,5,2,2,5,2,1,0.5),1*FIFOWeight(ConstPrio))'
-             '(10*Refinedweight(PreferGoals,1,2,2,2,0.5),10*Refinedweight(PreferNonGoals,2,1,2,2,2),3*OrientLMaxWeight(ConstPrio,2,1,2,1,1),2*ClauseWeightAge(ConstPrio,1,1,1,3))'
-             '(5*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(8*Refinedweight(PreferGoals,1,2,2,2,2),8*Refinedweight(PreferNonGoals,2,1,2,2,0.5),1*Clauseweight(PreferUnitGroundGoals,1,1,1),1*FIFOWeight(ConstPrio))'
-             '(10*Refinedweight(PreferGroundGoals,2,1,2,1.0,1),1*Clauseweight(ConstPrio,1,1,1),1*Clauseweight(ByCreationDate,2,1,0.8))'
-             '(10*PNRefinedweight(PreferGoals,1,1,1,2,2,2,0.5),10*PNRefinedweight(PreferNonGoals,2,1,1,1,2,2,2),5*OrientLMaxWeight(ConstPrio,2,1,2,1,1),1*FIFOWeight(ConstPrio))'
-             '(10*Refinedweight(PreferGoals,1,2,2,2,0.5),10*Refinedweight(PreferNonGoals,2,1,2,2,2),5*OrientLMaxWeight(ConstPrio,2,1,2,1,1),1*FIFOWeight(ConstPrio))'
-             '(10*Refinedweight(PreferGoals,1,2,2,2,0.5),10*Refinedweight(PreferNonGoals,2,1,2,2,2),1*Clauseweight(ConstPrio,1,1,1),1*FIFOWeight(ConstPrio))'
-             '(8*Refinedweight(PreferGoals,1,2,2,1,0.8),8*Refinedweight(PreferNonGoals,2,1,2,3,0.8),1*Clauseweight(ConstPrio,1,1,0.7),1*FIFOWeight(ByNegLitDist))'
-             '(12*Clauseweight(ConstPrio,3,1,1),1*FIFOWeight(ConstPrio))'
-             '(4*RelevanceLevelWeight2(PreferGoals,1,2,1,2,100,100,100,400,1.5,1.5,1),3*RelevanceLevelWeight2(PreferNonGoals,0,2,1,2,100,100,100,400,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(4*RelevanceLevelWeight2(SimulateSOS,0,2,1,2,100,100,100,400,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,200,100,200,50,50,1,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(10*RelevanceLevelWeight2(SimulateSOS,1,2,1,2,100,100,100,400,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,200,100,200,50,50,1,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(4*RelevanceLevelWeight2(SimulateSOS,1,2,0,2,100,100,100,400,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,200,100,200,50,50,1,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(4*ConjectureGeneralSymbolWeight(SimulateSOS,100,100,100,50,50,10,50,1.5,1.5,1),3*RelevanceLevelWeight2(ConstPrio,1,2,1,2,100,100,100,400,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(4*RelevanceLevelWeight2(ConstPrio,1,2,1,2,100,100,100,300,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,200,100,200,50,50,1,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(10*ConjectureRelativeSymbolWeight(ConstPrio,0.2,100,100,100,100,1.5,1.5,1.5),1*FIFOWeight(ConstPrio))'
-             '(7*ConjectureRelativeSymbolWeight(ConstPrio,0.5,100,100,100,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'
-             '(7*ConjectureRelativeSymbolWeight(ConstPrio,0.5,100,100,100,100,1.5,1.5,1),3*OrientLMaxWeight(ConstPrio,2,1,2,1,1),1*FIFOWeight(PreferProcessed))'
-             '(5*RelevanceLevelWeight2(ConstPrio,1,2,2,2,100,100,100,300,1.5,1.5,1.5),1*FIFOWeight(PreferProcessed))'
-             '(5*RelevanceLevelWeight2(ConstPrio,1,2,1,2,100,100,100,300,1.5,1.5,1),1*FIFOWeight(PreferProcessed))'
-             '(5*RelevanceLevelWeight2(SimulateSOS,2,2,0,2,100,100,100,100,1.5,1.5,1),1*FIFOWeight(PreferProcessed))'
-             '(20*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),1*Refinedweight(PreferNonGoals,2,1,2,3,0.8),1*FIFOWeight(ConstPrio))'
-             '(10*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),3*ConjectureRelativeSymbolWeight(ConstPrio,0.3,100,100,100,100,2.5,1,1),1*FIFOWeight(ConstPrio))'
-             '(4*ConjectureGeneralSymbolWeight(SimulateSOS,100,100,100,50,50,0,50,1.5,1.5,1),3*ConjectureGeneralSymbolWeight(PreferNonGoals,100,100,100,50,50,0,100,1.5,1.5,1),1*Clauseweight(PreferProcessed,1,1,1),1*FIFOWeight(PreferProcessed))'")
-"""
+iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'strategies.ini')           
+with open(iniLocation, 'wb') as configfile:
+    strategiesConfig.write(configfile)

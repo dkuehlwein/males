@@ -4,7 +4,7 @@ Created on May 3, 2013
 @author: daniel
 '''
 
-import ConfigParser,os
+import ConfigParser,os,sys
 from readData import get_TPTP_features, get_e_features,compute_features
 
 if __name__ == '__main__':
@@ -31,7 +31,7 @@ if __name__ == '__main__':
                 #neue Liste mit dem ganzen Pfad zur Datei 
         
     #print TolleDateien
-            
+    weirdTHF = 0        
     for tolleDatei in TolleDateien:
         Inputfile = open(tolleDatei, 'r')
         lines = Inputfile.readlines()
@@ -47,6 +47,7 @@ if __name__ == '__main__':
                 GuteDateienplus.append(tolleDatei)
             if '^' in tolleDatei:
                 GuteDateiendach.append(tolleDatei)
+                weirdTHF +=1 
         else:
             if (float(rating) > 0.21):
                 #print 'Gute Datei: ' + tolleDatei
@@ -55,6 +56,8 @@ if __name__ == '__main__':
                 if '^' in tolleDatei:
                     GuteDateiendach.append(tolleDatei)
     
+    print weirdTHF
+    sys.exit()
     GuterStringplus=str(GuteDateienplus)
     GuterStringdach=str(GuteDateiendach)
     

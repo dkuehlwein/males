@@ -17,7 +17,7 @@ def alarm_handler(signum, frame):
     raise Alarm
 
 class RunATP(object):
-    def __init__(self,binary,strategy,timeParam,runTime,filename,pause=False,maxTime=300):
+    def __init__(self,binary,strategy,timeString,time,filename,pause=False,maxTime=300):
         '''
         Constructor
         '''
@@ -25,9 +25,9 @@ class RunATP(object):
         self.binary = binary
         self.filename = filename        
         self.strategy = strategy
-        self.runTime = runTime
+        self.timeString = timeString
+        self.runTime = time
         self.maxTime = maxTime
-        self.timeParam = timeParam
         self.pid = None
         self.process = None    
         self.time = None    
@@ -38,7 +38,7 @@ class RunATP(object):
         killed.
         '''
         signal(SIGALRM, alarm_handler)
-        command = '%s %s %s %s %s' % (self.binary,self.strategy,self.timeParam,self.maxTime,self.filename) 
+        command = '%s %s %s %s' % (self.binary,self.strategy,self.timeString,self.filename) 
         #print command
         args = shlex.split(command)
         startTime = time()

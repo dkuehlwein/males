@@ -51,7 +51,7 @@ def greedy_startStrategies(strategies,runTime=1.0,number=10):
                 maxSolved = len(tmp)
                 bestStrat = s
             solvedInRunTime[s] = tmp
-        startStrats.append(bestStrat)
+        startStrats.append(bestStrat)        
         solved = solved.union(solvedInRunTime[bestStrat])
     logger.info("Solved by chosen strategies / Max solvable in runTime / Max solvable : %s / %s / %s" % \
                 (len(solved),len(set(maxPossibleSolvedInRunTime)),len(set(maxPossibleSolved))))
@@ -114,7 +114,7 @@ if __name__ == '__main__':
                     bestStrats[p] = s
         tmp2Strategies = set(bestStrats.values())
         logger.info('Deleted %s strategies. %s strategies left.' % (len(tmpStrategies)-len(tmp2Strategies),len(tmp2Strategies)))        
-                
+        
         # Get start strategies
         logger.info("Getting starting strategies..")
         startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=config.getfloat('Learn', 'StartStrategiesTime'),number=config.getint('Learn', 'StartStrategies') )

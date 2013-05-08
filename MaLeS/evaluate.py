@@ -19,9 +19,9 @@ if __name__ == '__main__':
     problemsTest = getAllProblems(problemFileTest)    
     theorySolved = 0
     practiceSolved = 0
-    time = 30
+    time = 300
     timeBuffer = 1.0
-    solveable = 516
+    solveable = 518
     
     # Load data
     startStrategies,startTime,strategies,notSolvedYet,kernelGrid = load_data(stratFile)
@@ -34,6 +34,7 @@ if __name__ == '__main__':
     notSolvedYetOrig = notSolvedYet    
     strategiesOrig = strategies
     theorySolved = solveable - len(notSolvedYet)
+    solvedProblems = []
     
     # Evaluate    
     for i,p in enumerate(notSolvedYetOrig):
@@ -121,14 +122,16 @@ if __name__ == '__main__':
             
         if solved:
             theorySolved += 1
+            solvedProblems.append(p)
     print 'Theory',len(notSolvedYetOrig),theorySolved,solveable
     #"""
     
     print 'starting practiceTrain'    
-    args = [['-t',str(time),'-p',p.location] for p in problemsTrain]
-    #for x in args:
-    #    main(x)
-    #"""
+    #args = [['-t',str(time),'-p',p.location] for p in problemsTrain]    
+    args = [['-t',str(time),'-p','/home/daniel/TPTP/TPTP-v5.4.0/Problems/ALG/ALG256^1.p']]
+    for x in args[:1]:
+        main(x)
+    """
     pool = Pool(processes = cpu_count())
     results = pool.map_async(main,args)       
     pool.close()

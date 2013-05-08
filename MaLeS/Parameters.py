@@ -49,6 +49,10 @@ class Parameters(object):
                     self.parameters[option] = Parameter([minVal])
                 else:
                     self.parameters[option] = Parameter(range(minVal,maxVal))
+        if atpConfig.has_section('List Parameters'):
+            for option in atpConfig.options('List Parameters'):
+                vals = atpConfig.get('List Parameters',option)
+                self.parameters[option] = Parameter(vals.split())
 
     def perturb(self,strategy,walkLength):
         newStrategy = strategy.copy()
