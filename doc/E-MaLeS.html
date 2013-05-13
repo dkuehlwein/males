@@ -1,0 +1,71 @@
+<HR><!------------------------------------------------------------------------>
+<H2>E-MaLeS 1.2</H2>
+Daniel K&uuml;hlwein<SUP>1</SUP>, Josef Urban<SUP>1</SUP>, Stephan Schulz<SUP>2</SUP><BR>
+<SUP>1</SUP>Radboud University Nijmegen, The Netherlands,
+<SUP>2</SUP>Technische Universit&auml;t M&uuml;nchen, Germany
+
+<H3>Architecture</H3>
+
+E-MaLeS 1.2 is the result of applying the MaLeS 1.2 framework to E prover (version 1.7) [Sch02].
+<P>
+MaLeS (Machine Learning of Strategies) is a framework for automatic tuning of ATPs.
+It combines strategy finding (similar to ParamILS [HHLT09] and BliStr [Urb13]) with strategy scheduling (similar to SatZilla [LHHL08]).
+A description of E can be found below.
+Given a set of problems, MaLeS 1.2 finds good parameter settings by using a local random search algorithm.
+The found settings are stored as strategies. 
+For each strategy, MaLeS learns a function that given a new problem predicts the time the ATP needs to solve this problem when using this particular strategy.
+When trying to solve a new problem, MaLeS uses these prediction functions to create a strategy schedule.
+<P>
+The learning algorithm is described in [KUS13].
+Further information can be found on the project website.
+
+<H3>Implementation</H3>
+
+MaLeS is implemented in python, using the numpy and scipy libraries. 
+MaLeS is open source and hosted at 
+<PRE> <A HREF="https://code.google.com/p/males/">https://code.google.com/p/males/</A></PRE>
+E prover can be found at 
+<PRE> <A HREF="http://www4.informatik.tu-muenchen.de/~schulz/E/E.html">www.eprover.org</A></PRE>
+
+<H3>Expected Competition Performance</H3>
+
+E-MaLeS 1.2 should perform better than E 1.7.
+
+<H3>References</H3>
+<DL>
+<DT> KUS13
+<DD> K&uuml;hlwein D., Urban J., Schulz, S. (2013),
+     <STRONG>E-MaLeS 1.1</STRONG>,
+     <EM>CADE 24</EM>
+</DL>
+<DT> Sch02
+<DD> Schhulz, S. (2002),
+     <STRONG>E -- A Brainiac Theorem Prover</STRONG>,
+     <EM>Journal of AI Communications</EM>, 15(2,3)
+     pp. 111-126 ,
+     IOS Press
+</DL>
+<DT> HHLT09
+<DD> Hutter F., Hoos H., Leyton-Brown, K., St&uuml;tzle, T. (2009),
+     <STRONG>ParamILS: An Automatic Algorithm Configuration Framework</STRONG>,
+     <EM>Journal of Artificial Intelligence Research</EM> 36,
+     pp. 267-306,
+     AAAI
+</DL>
+<DT> LHHL08
+<DD> Xu L., Hutter F., Hoos H., Leyton-Brown, K. (2008),
+     <STRONG>SATzilla: Portfolio-based Algorithm Selection for SAT</STRONG>,
+     <EM>Journal of Artificial Intelligence Research</EM> 32,
+     pp. 565-606,
+     AAAI
+</DL>
+<DT> Urb13
+<DD> Urban, J. (2013),
+     <STRONG>BliStr: The Blind Strategymaker</STRONG>,
+     <EM>Computing Research Repository</EM>, abs/1301.2683
+</DL>
+ 
+
+<P>
+<HR><!------------------------------------------------------------------------>
+
