@@ -10,7 +10,7 @@ Created on May 8, 2013
 '''
 
 import argparse,os,ConfigParser
-
+"""
 parser = argparse.ArgumentParser(description='Automatically creates an INI file for Satallax given its location.')
 parser.add_argument('location', metavar='LOCATION',  
                    help='The Satallax folder. E.g. /home/daniel/TPTP/E1.7/PROVER')
@@ -123,16 +123,26 @@ config.set('List Parameters','-W'," ".join(["NoSelection","NoGeneration","Select
              "SelectNewComplexAHPExceptRRHorn","PSelectNewComplexAHPExceptRRHorn","SelectNewComplexAHPExceptUniqMaxHorn","PSelectNewComplexAHPExceptUniqMaxHorn",\
              "SelectNewComplexAHPNS","SelectVGNonCR"]))
 
-
+"""
 # Parse defined modes and extract min/max values
 strategiesConfig = ConfigParser.SafeConfigParser()
 strategiesConfig.optionxform = str
-modesPath = os.path.join('../results')
+modesPath = os.path.join('../resultsTmp')
 modes = os.listdir(modesPath)
 for mode in modes:
-    strategiesConfig.add_section(mode)    
+    # TODO: ONLY FOR CASC SETUP
+    localStrategiesConfig = ConfigParser.SafeConfigParser()
+    localStrategiesConfig.optionxform = str
+    
+    strategiesConfig.add_section(mode)
+    localStrategiesConfig.add_section(mode)       
     params = open(os.path.join(modesPath,mode)).readlines()[0][1:]
     option = ''
+    resultsLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'results',mode+'.results')
+    OS = open(resultsLocation,'w')
+    lines = open(os.path.join(modesPath,mode)).readlines()
+    OS.write("".join(lines[1:]))
+    OS.close()
     #print mode
     #print params
     for param in params.split():
@@ -142,7 +152,7 @@ for mode in modes:
                 value = 'True'
                 if param == '--tstp-in':
                     continue
-                assert config.has_option('Boolean Parameters', param)
+                #assert config.has_option('Boolean Parameters', param)
             else:
                 option = param.split('=')[0]
                 value = param.split('=')[1]
@@ -152,17 +162,20 @@ for mode in modes:
             if param == '-s':
                 continue
             #print option, value
-            assert config.has_option('List Parameters', option)
-            possibleVals = (config.get('List Parameters', option)).split()             
-            assert value in possibleVals
+            #assert config.has_option('List Parameters', option)
+            #possibleVals = (config.get('List Parameters', option)).split()             
+            #assert value in possibleVals
         else:
             print 'Unknown parameter in %s' % mode
         strategiesConfig.set(mode, option, value)
-            
+        localStrategiesConfig.set(mode, option, value)
+        iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'results',mode)           
+        with open(iniLocation, 'wb') as configfile:
+            localStrategiesConfig.write(configfile)           
 
-iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'E.ini')           
-with open(iniLocation, 'wb') as configfile:
-    config.write(configfile)    
+#iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'E.ini')           
+#with open(iniLocation, 'wb') as configfile:
+#    config.write(configfile)    
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'strategies.ini')           
 with open(iniLocation, 'wb') as configfile:
     strategiesConfig.write(configfile)

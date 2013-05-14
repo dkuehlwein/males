@@ -92,7 +92,7 @@ class Strategy(object):
             self.runBefore = True
         if (atpConfig.get('ATP Settings','strategy')=='E'):
             strategyString = " ".join([create_E_string(self.parameters),atpConfig.get('ATP Settings','default')])
-            timeString = "".join([atpConfig.get('ATP Settings','time'),str(time)])
+            timeString = "".join([atpConfig.get('ATP Settings','time'),str(int(time+0.5))])
         return strategyString,timeString
 
     def run(self,problem,runTime,atpConfig):

@@ -29,19 +29,24 @@ if __name__ == '__main__':
                 #wenn + oder ^ vorkommt ist es eine tolle Datei :)
                 TolleDateien.append(tolleDatei)
                 #neue Liste mit dem ganzen Pfad zur Datei 
-        
+    
+    #print len(dateien)    
     #print TolleDateien
     weirdTHF = 0        
     for tolleDatei in TolleDateien:
         Inputfile = open(tolleDatei, 'r')
         lines = Inputfile.readlines()
-        
+        rating = 0
+        CSat = False
         for line in lines:
+            if (line.startswith('% Status   : CounterSatisfiable') or line.startswith('% Status   : Satisfiable')):
+                CSat = True
             if (line.startswith('% Rating')):
                 splits = line.split()
                 rating = splits[3]
                 #print rating
-    
+        if CSat:
+            continue
         if (rating is '?'):
             if '+' in tolleDatei:
                 GuteDateienplus.append(tolleDatei)
@@ -57,7 +62,8 @@ if __name__ == '__main__':
                     GuteDateiendach.append(tolleDatei)
     
     print weirdTHF
-    sys.exit()
+    
+    #sys.exit()
     GuterStringplus=str(GuteDateienplus)
     GuterStringdach=str(GuteDateiendach)
     

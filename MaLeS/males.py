@@ -113,8 +113,8 @@ def main(argv = sys.argv[1:]):
         runTime = get_run_time(startStratsTime,args.time,beginTime,ceil=False) # Need to round to the nearest integer for E
         runTimes[strategy.name] = runTime
         logger.info("Running %s for %s seconds" % (strategy.name,runTime))
-        strategyString = strategy.get_atp_string(atpConfig)
-        sP = RunATP(atpConfig.get('ATP Settings','binary'),strategyString,atpConfig.get('ATP Settings','time'),runTime,args.problem,maxTime=args.time)
+        strategyString,timeString = strategy.get_atp_string(atpConfig,runTime)
+        sP = RunATP(atpConfig.get('ATP Settings','binary'),strategyString,timeString,runTime,args.problem,maxTime=args.time)
 #        sP = RunE(args.problem,strategy.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
         if config.getboolean('Run', 'PauseProver'):
             processDict[strategy.name] = sP
@@ -180,8 +180,8 @@ def main(argv = sys.argv[1:]):
             sP = processDict[bestStrat.name]
             proofFound,_countersat,output,_time = sP.cont(runTime)        
         else:
-            bestStratString = bestStrat.get_atp_string(atpConfig)
-            sP = RunATP(atpConfig.get('ATP Settings','binary'),bestStratString,atpConfig.get('ATP Settings','time'),runTime,args.problem,maxTime=args.time)
+            bestStratString,bestStratTimeString = bestStrat.get_atp_string(atpConfig,runTime)
+            sP = RunATP(atpConfig.get('ATP Settings','binary'),bestStratString,bestStratTimeString,runTime,args.problem,maxTime=args.time)
 #            sP = RunE(args.problem,bestStrat.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
             if config.getboolean('Run', 'PauseProver'):
                 processDict[bestStrat.name] = sP    

@@ -45,7 +45,7 @@ def get_TPTP_features(filename):
                 features.append(float(word))
             except:
                 continue   
-    #print features
+    #print len(features)    
     if (len(features)> 0):
         return features
     logger.warning('Could not compute features. Try running:')
@@ -94,7 +94,7 @@ def get_normalized_features(problemFile,featureStyle,minVals,maxVals):
     normalizedFeatures = mat(problemFeatures)
     return normalizedFeatures
 
-def compute_features(problemsList,featureStyle):
+def compute_features(problemsList,featureStyle,cores):
     featureDict = {}
     maxVals = []
     minVals = []
@@ -105,7 +105,7 @@ def compute_features(problemsList,featureStyle):
         featureFunction = get_e_features
     else:
         featureFunction = get_TPTP_features
-    pool = Pool(processes = cpu_count())    
+    pool = Pool(processes = cores)            
     results = pool.map_async(featureFunction,problemsList)       
     pool.close()
     pool.join() 
@@ -114,6 +114,7 @@ def compute_features(problemsList,featureStyle):
             maxVals = list(features)
             minVals = list(features)
             setUp = True
+        print problem, len(features),len(maxVals)
         assert len(features) == len(maxVals)
         # Max/Min Values
         for i in range(len(features)):            
