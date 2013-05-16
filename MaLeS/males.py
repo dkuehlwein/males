@@ -65,6 +65,10 @@ def main(argv = sys.argv[1:]):
         print 'Cannot find ATP.ini at %s' % args.Setup
         sys.exit(-1)    
     atpConfig.read(args.ATP)    
+
+    if not os.path.exists(args.problem):
+        print 'Cannot find problem file: %s' % args.problem
+        sys.exit(-1)    
         
     # Debug
     #args.problem = "/home/daniel/workspace/E-MaLeS1.1/test/compts_1__t20_compts_1.p"
@@ -84,21 +88,27 @@ def main(argv = sys.argv[1:]):
         outStream = sys.stdout
     else:
         outStream = open(config.get('Run', 'OutputFile'),'w')
-    
-    # Set up logging 
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                        datefmt='%d-%m %H:%M:%S',
-                        filename=logFile,
-                        filemode='w')
-    console = logging.StreamHandler(outStream)
-    console.setLevel(logging.INFO)
-    #console.setLevel(logging.WARNING)
-    formatter = logging.Formatter('%% %(message)s')
-    console.setFormatter(formatter)    
-    logger = logging.getLogger('males - %s' % args.problem)
-    logger.addHandler(console)
-    logger.filename=logFile    
+
+    # Set up logging
+    if config.getboolean('Settings', 'LogToFile'):
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                            datefmt='%d-%m %H:%M:%S',
+                            filename=logFile,
+                            filemode='w')
+        console = logging.StreamHandler(outStream)
+        console.setLevel(logging.INFO)
+        formatter = logging.Formatter('%% %(message)s')
+        console.setFormatter(formatter)    
+        logger = logging.getLogger('males - %s' % args.problem)
+        logger.addHandler(console)
+        logger.filename=logFile
+    else:
+        logging.basicConfig(level=logging.INFO,
+                            format='%% %(message)s',
+                            datefmt='%d-%m %H:%M:%S')
+        logger = logging.getLogger('males - %s' % args.problem)
+        
     logger.info("Trying to solve %s" % args.problem)
     
     # Time
