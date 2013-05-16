@@ -19,7 +19,7 @@ def create_ini(location,iniFile = '../ATP.ini'):
     config.optionxform = str
     
     config.add_section('ATP Settings')
-    config.set('ATP Settings','binary',os.path.join(location,'bin','satallax.opt'))
+    config.set('ATP Settings','binary',os.path.realpath(os.path.join(location,'bin','satallax.opt')))
     config.set('ATP Settings','time','-t')
     config.set('ATP Settings','problem','')
     config.set('ATP Settings','strategy','Satallax')

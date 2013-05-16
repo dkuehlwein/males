@@ -23,7 +23,7 @@ config = ConfigParser.SafeConfigParser()
 config.optionxform = str
 
 config.add_section('ATP Settings')
-config.set('ATP Settings','binary',os.path.join(args.location,'eproof_ram'))
+config.set('ATP Settings','binary',os.path.realpath(os.path.join(args.location,'eproof_ram')))
 config.set('ATP Settings','time','--cpu-limit=')
 config.set('ATP Settings','problem','')
 config.set('ATP Settings','strategy','E')

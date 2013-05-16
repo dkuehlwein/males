@@ -37,7 +37,7 @@ config.set('Search','WalkLength','10')
 config.add_section('Learn')
 config.set('Learn','Time','10')
 config.set('Learn','MaxTime','300')
-config.set('Learn','Features','E') # or TPTP
+config.set('Learn','Features','TPTP') # or TPTP
 config.set('Learn','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
 config.set('Learn','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
 config.set('Learn','ModelsFile',os.path.join(path,'tmp','models.pickle'))
