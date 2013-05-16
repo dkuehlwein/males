@@ -13,7 +13,7 @@ from multiprocessing import Pool,cpu_count,Manager
 
 mainPath = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 parser = argparse.ArgumentParser(description='Strategy Finder 1.1 --- May 2013.')
-parser.add_argument('--Setup', default = '../setup.ini',  
+parser.add_argument('--Setup',   
                    help='The ini file with the learn parameters.')
 
 def apply_strat((strategy,notSolvedYet,KMs,regGrid,cv,cvFolds)):
@@ -114,7 +114,7 @@ if __name__ == '__main__':
                     bestStrats[p] = s
         tmp2Strategies = set(bestStrats.values())
         logger.info('Deleted %s strategies. %s strategies left.' % (len(tmpStrategies)-len(tmp2Strategies),len(tmp2Strategies)))        
-        
+       
         # Get start strategies
         logger.info("Getting starting strategies..")
         startStrategies,solved,notSolvedYet = greedy_startStrategies(tmp2Strategies,runTime=config.getfloat('Learn', 'StartStrategiesTime'),number=config.getint('Learn', 'StartStrategies') )

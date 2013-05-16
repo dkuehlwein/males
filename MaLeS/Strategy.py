@@ -25,12 +25,13 @@ def create_satallax_string(binary,name,parameters,runBefore):
     if not runBefore:
         binDir = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(binary))))    
         modesDir = os.path.join(binDir,'modes')
-        modeFile = os.path.join(modesDir,name)    
-        OS = open(modeFile,'w')
-        for param,val in parameters.items():
-            OS.write(param+'\n')            
-            OS.write(str(val).lower()+'\n')
-        OS.close()
+        modeFile = os.path.join(modesDir,name)
+        if not  os.path.exists(modeFile):    
+            OS = open(modeFile,'w')
+            for param,val in parameters.items():
+                OS.write(param+'\n')            
+                OS.write(str(val).lower()+'\n')
+            OS.close()
     return '-m %s' % name
     
 
@@ -70,7 +71,7 @@ class Strategy(object):
         for param,val in params:
             self.parameters[param] = val
         self.runForFullTime = False
-        self.runBefore = False
+        self.runBefore = False       
         # Model fields    
         self.weights = None
         self.KM = None

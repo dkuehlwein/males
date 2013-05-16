@@ -13,8 +13,7 @@ Created on May 5, 2013
 # Sys imports
 import sys,logging,atexit,os,ConfigParser
 from os.path import realpath,dirname
-from multiprocessing import cpu_count
-from numpy import mat,argsort,ix_
+from numpy import argsort,ix_
 from time import time
 from argparse import ArgumentParser
 
@@ -26,10 +25,10 @@ from RunATP import RunATP
 malesPath = dirname(dirname(realpath(__file__)))
 parser = ArgumentParser(description='E-MaLeS 1.2 --- August 2012.')
 parser.add_argument('-t','--time',help='MaLeS will run at most this long.',type=int,default=10)
-parser.add_argument('-p','--problem',help='The problem that you want to solve.',default='foo')
-parser.add_argument('--Setup', default = '../setup.ini',  
+parser.add_argument('-p','--problem',help='The problem that you want to solve.',default = '../test/ALG001^5.p')
+parser.add_argument('--Setup', default = os.path.join(malesPath,'setup.ini'),  
                    help='The ini file with the default parameters.')
-parser.add_argument('--ATP', default = '../Satallax/satallax.ini',  
+parser.add_argument('--ATP', default = os.path.join(malesPath,'ATP.ini'),
                    help='The ini file with the ATP parameters.')
 
 def get_run_time(preferedRunTime,maxTime,startTime,ceil=True):
@@ -55,9 +54,16 @@ def main(argv = sys.argv[1:]):
     args = parser.parse_args(argv)
     config = ConfigParser.SafeConfigParser()
     config.optionxform = str
+    if not os.path.exists(args.Setup):
+        print 'Cannot find setup.ini at %s' % args.Setup
+        sys.exit(-1)
     config.read(args.Setup)
+    
     atpConfig = ConfigParser.SafeConfigParser()
     atpConfig.optionxform = str
+    if not os.path.exists(args.Setup):
+        print 'Cannot find ATP.ini at %s' % args.Setup
+        sys.exit(-1)    
     atpConfig.read(args.ATP)    
         
     # Debug
@@ -120,7 +126,7 @@ def main(argv = sys.argv[1:]):
             processDict[strategy.name] = sP
         proofFound,_countersat,output,_time = sP.run()
         if proofFound:                    
-            logger.info(output)                
+            logger.info('\n'+output)                
             for p in processDict.itervalues():
                 p.terminate()
             logger.info("Time used: %s seconds" % (time()-beginTime))
@@ -187,7 +193,7 @@ def main(argv = sys.argv[1:]):
                 processDict[bestStrat.name] = sP    
             proofFound,_countersat,output,_time = sP.run()
         if proofFound:                    
-            logger.info(output)                
+            logger.info('\n' + output)                
             for p in processDict.itervalues():
                 p.terminate()
             logger.info("Time used: %s seconds" % (time()-beginTime))

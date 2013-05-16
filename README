@@ -1,0 +1,16 @@
+
+----------------------  MaLeS 1.2 ------------------------
+
+Requirements: Python 2.7.x, Numpy, Scipy (http://www.scipy.org/Installing_SciPy)
+
+-- Installation of Satallax-MaLeS
+
+1. Install Satallax 2.7 (http://www.ps.uni-saarland.de/~cebrown/satallax/)
+2. Run SatallaxConfig with the installation folder of Satallax as an argument.
+   python SatallaxConfig.py /home/daniel/satallax2.7
+3. Test Satallax-MaLeS
+   MaLeS/males.py -t 30 -p test/ALG001^5.p
+
+
+
+

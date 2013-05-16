@@ -10,10 +10,10 @@ Created on May 8, 2013
 '''
 
 import argparse,os,ConfigParser
-"""
+
 parser = argparse.ArgumentParser(description='Automatically creates an INI file for Satallax given its location.')
 parser.add_argument('location', metavar='LOCATION',  
-                   help='The Satallax folder. E.g. /home/daniel/TPTP/E1.7/PROVER')
+                   help='The E folder. E.g. /home/daniel/TPTP/E1.7/PROVER')
 args = parser.parse_args()
 
 # Parse default flags
@@ -43,7 +43,7 @@ config.set('Boolean Parameters','--presat-simplify','False')
 config.set('Boolean Parameters','--sos-uses-input-types','False')
 
 config.add_section('List Parameters')
-config.set('List Parameters','--split-clauses','0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31')
+config.set('List Parameters','--split-clauses','0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31')
 config.set('List Parameters','--delete-bad-limit','1500000 150000000 512000000 1024000000')
 config.set('List Parameters','--definitional-cnf','0 12 16 24 48')
 config.set('List Parameters','-G','unary_first unary_freq arity invarity const_max const_min freq invfreq invconjfreq invfreqconjmax invfreqconjmin invfreqconstmin invfreqhack arrayopt orient_axioms')
@@ -123,7 +123,7 @@ config.set('List Parameters','-W'," ".join(["NoSelection","NoGeneration","Select
              "SelectNewComplexAHPExceptRRHorn","PSelectNewComplexAHPExceptRRHorn","SelectNewComplexAHPExceptUniqMaxHorn","PSelectNewComplexAHPExceptUniqMaxHorn",\
              "SelectNewComplexAHPNS","SelectVGNonCR"]))
 
-"""
+
 # Parse defined modes and extract min/max values
 strategiesConfig = ConfigParser.SafeConfigParser()
 strategiesConfig.optionxform = str

@@ -113,8 +113,7 @@ def compute_features(problemsList,featureStyle,cores):
         if not setUp:
             maxVals = list(features)
             minVals = list(features)
-            setUp = True
-        print problem, len(features),len(maxVals)
+            setUp = True        
         assert len(features) == len(maxVals)
         # Max/Min Values
         for i in range(len(features)):            

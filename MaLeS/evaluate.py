@@ -12,8 +12,8 @@ from multiprocessing import Pool,cpu_count
 if __name__ == '__main__':
     stratFile = '../tmp/strategies.pickle'
     featureFile = '../tmp/features.pickle'
-    problemFileTest = '../Satallax/data/CASC24Test'
-    problemFileTrain = '../Satallax/data/CASC24Training'
+    problemFileTest = '../E/data/CASC24Test'
+    problemFileTrain = '../E/data/CASC24Training'
     KMsFile = '../tmp/models.pickle'
     problemsTrain = getAllProblems(problemFileTrain)
     problemsTest = getAllProblems(problemFileTest)    
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     featureDict,minVals,maxVals = load_data(featureFile)
     KMs = load_data(KMsFile)
     
-    #"""
+    """
     # Theory
     timeLeftOrig = time
     notSolvedYetOrig = notSolvedYet    
@@ -123,13 +123,13 @@ if __name__ == '__main__':
         if solved:
             theorySolved += 1
             solvedProblems.append(p)
-    print 'Theory',len(notSolvedYetOrig),theorySolved,solveable
+    print 'Theory eval: origNotSolved %s, theorysolved % ' % (len(notSolvedYetOrig),theorySolved)
     #"""
     
     print 'starting practiceTrain'    
-    #args = [['-t',str(time),'-p',p.location] for p in problemsTrain]    
-    args = [['-t',str(time),'-p','/home/daniel/TPTP/TPTP-v5.4.0/Problems/ALG/ALG256^1.p']]
-    for x in args[:1]:
+    args = [['-t',str(time),'-p',p.location] for p in problemsTrain]    
+    #args = [['-t',str(time),'-p','/home/daniel/TPTP/TPTP-v5.4.0/Problems/ALG/ALG256^1.p']]
+    for x in args[100:101]:
         main(x)
     """
     pool = Pool(processes = cpu_count())
