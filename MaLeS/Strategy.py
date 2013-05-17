@@ -193,12 +193,22 @@ class Strategy(object):
             self.KM = self.KM[numpy.ix_(sliceIndices,sliceIndices)]
             self.weights = self.KM.I * self.labels
         return deleteStrat
-
     
     def predict(self,testKM):
         # If there is not enough data, return the maximal time.
         if self.labels.shape[0] < self.minDataPoints:
-            return max(self.solvedProblems.itervalues())
+            minVal = 300
+            secondMin = 300
+            for v in self.solvedProblems.itervalues():
+                if v < minVal:
+                    secondMin = minVal
+                    minVal = v
+            if secondMin == 300:
+                return round(minVal+0.05,2)
+            else:
+                return round(secondMin+0.05,2)
+            # TODO: What's best?            
+            #return max(self.solvedProblems.itervalues())        
         localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
         returnVal = float(localTestKM*self.weights)
         return returnVal               

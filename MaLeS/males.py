@@ -129,7 +129,7 @@ def main(argv = sys.argv[1:]):
         runTime = get_run_time(startStratsTime,args.time,beginTime,ceil=False) # Need to round to the nearest integer for E
         runTimes[strategy.name] = runTime
         logger.info("Running %s for %s seconds" % (strategy.name,runTime))
-        strategyString,timeString = strategy.get_atp_string(atpConfig,runTime)
+        strategyString,timeString = strategy.get_atp_string(atpConfig,args.time)
         sP = RunATP(atpConfig.get('ATP Settings','binary'),strategyString,timeString,runTime,args.problem,maxTime=args.time)
 #        sP = RunE(args.problem,strategy.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
         if config.getboolean('Run', 'PauseProver'):
@@ -168,6 +168,7 @@ def main(argv = sys.argv[1:]):
             predictions.append(predRunTime)
 
         # Run the strategy with shortest predicted time
+        foundNewBestStrat = False
         sortedPredictions = list(argsort(predictions))
         for bestStratIndex in sortedPredictions:
             bestStrat = strategies[bestStratIndex]
@@ -177,16 +178,21 @@ def main(argv = sys.argv[1:]):
             # a) if is wasn't tried before
             if not runTimes.has_key(bestStrat.name):
                 runTimes[bestStrat.name] = 0.0
+                foundNewBestStrat = True
                 break
             # b) if the earlier best runTime is less than the current runTime and isn't finished
             if runTimes[bestStrat.name] < runTime:
+                foundNewBestStrat = True
                 if config.getboolean('Run', 'PauseProver'):
                     if not processDict[bestStrat.name].is_finished():
                         preferedRunTime -= runTimes[bestStrat.name] 
                         break
                 else:   
                     break             
-                
+        # If we tried all options, run auto for the rest of the time
+        if not foundNewBestStrat:
+            pass
+        
         # Determine runtime:        
         runTimes[bestStrat.name] += runTime
 
@@ -196,7 +202,7 @@ def main(argv = sys.argv[1:]):
             sP = processDict[bestStrat.name]
             proofFound,_countersat,output,_time = sP.cont(runTime)        
         else:
-            bestStratString,bestStratTimeString = bestStrat.get_atp_string(atpConfig,runTime)
+            bestStratString,bestStratTimeString = bestStrat.get_atp_string(atpConfig,args.time)
             sP = RunATP(atpConfig.get('ATP Settings','binary'),bestStratString,bestStratTimeString,runTime,args.problem,maxTime=args.time)
 #            sP = RunE(args.problem,bestStrat.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
             if config.getboolean('Run', 'PauseProver'):
