@@ -13,7 +13,7 @@ from multiprocessing import Pool,cpu_count,Manager
 
 mainPath = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 parser = argparse.ArgumentParser(description='Strategy Finder 1.1 --- May 2013.')
-parser.add_argument('--Setup',   
+parser.add_argument('--Setup', default = os.path.join(mainPath,'setup.ini'),  
                    help='The ini file with the learn parameters.')
 
 def apply_strat((strategy,notSolvedYet,KMs,regGrid,cv,cvFolds)):
@@ -129,7 +129,7 @@ if __name__ == '__main__':
             if len(s.solvedProblems) > 0:
                 strategies.append(s)
 
-        #"""
+        """
         # TODO: Hack
         for i,p in enumerate(notSolvedYet):
             p = p.replace('/scratch/kuehlwein','/home/daniel/TPTP')
@@ -143,7 +143,7 @@ if __name__ == '__main__':
             logger.info('Creating feature Dict.')
             featureDict,maxVals,minVals = compute_features(notSolvedYet,config.get('Learn', 'Features'),config.getint('Settings', 'Cores'))            
             featureDict = normalize_featureDict(featureDict,maxVals,minVals)
-            #"""        
+            """        
             # TODO: HACK!
             aaa = {}
             for key,val in featureDict.iteritems():

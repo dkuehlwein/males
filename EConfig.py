@@ -1,26 +1,80 @@
 #! /usr/bin/env python
-'''
-CreateEIni
 
-Automatically creates an INI file for E given its location. 
+import os,ConfigParser,argparse,sys
+from multiprocessing import cpu_count
 
-Created on May 8, 2013
-
-@author: Daniel Kuehlwein
-'''
-
-import argparse,os,ConfigParser
-
-parser = argparse.ArgumentParser(description='Automatically creates an INI file for Satallax given its location.')
-parser.add_argument('location', metavar='LOCATION',  
-                   help='The E folder. E.g. /home/daniel/TPTP/E1.7/PROVER')
+parser = argparse.ArgumentParser(description='Automatically creates an INI file for E given its location.')
+parser.add_argument('--location', metavar='LOCATION',  
+                   help='The E folder. E.g. /home/daniel/TPTP/E')
 args = parser.parse_args()
 
-# Parse default flags
-#flagsFile = os.path.join(args.location,'src','flags.ml')
-#flagsStream = open(flagsFile)
+TPTP = os.getenv('TPTP')
+if TPTP == None:
+    TPTP = '/home/daniel/TPTP/TPTP-v5.4.0'
+    print 'ERROR: TPTP Environment variable not defined. Using: %s' % TPTP
+if not os.path.exists('tmp'):
+    os.mkdir('tmp')    
+
+path = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
+
 config = ConfigParser.SafeConfigParser()
 config.optionxform = str
+config.add_section('Settings')
+config.set('Settings','TPTP',TPTP)
+config.set('Settings','TmpDir',os.path.join(path,'tmp')) 
+config.set('Settings','Cores',str(cpu_count()-1))
+config.set('Settings','ResultsDir',os.path.join(path,'results'))
+config.set('Settings','ResultsPickle',os.path.join(path,'tmp','results.pickle'))
+config.set('Settings','TmpResultsDir',os.path.join(path,'resultsTmp'))
+config.set('Settings','TmpResultsPickle',os.path.join(path,'tmp','resultsTmp.pickle'))
+config.set('Settings','Clear','True')
+config.set('Settings','LogToFile','False')
+config.set('Settings','LogFile',os.path.join(path,'tmp','satallax.log'))
+
+config.add_section('Search')
+config.set('Search','Time','10')
+config.set('Search','Problems',os.path.join(path,'E','data','CASC24Training'))
+config.set('Search','FullTime','False')
+config.set('Search','TryWithNewDefaultTime','False')
+config.set('Search','Walks',str(max(50,cpu_count()-1)))
+config.set('Search','WalkLength','10')
+
+config.add_section('Learn')
+config.set('Learn','Time','10')
+config.set('Learn','MaxTime','300')
+config.set('Learn','Features','E') # or TPTP
+config.set('Learn','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
+config.set('Learn','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
+config.set('Learn','ModelsFile',os.path.join(path,'tmp','models.pickle'))
+config.set('Learn','RegularizationGrid','0.25,0.5,1,2,4,8,16,32,64')
+config.set('Learn','KernelGrid','0.125,0.25,0.5,1,2,4,8,16,32,64')
+config.set('Learn','CrossValidate','True')
+config.set('Learn','CrossValidationFolds','10')
+config.set('Learn','StartStrategies','10')
+config.set('Learn','StartStrategiesTime','0.5')
+config.set('Learn','CPU Bias','0.3')
+config.set('Learn','Tolerance','0.3')
+
+config.add_section('Run')
+config.set('Run','CPUSpeedRatio','1.0')
+config.set('Run','MinRunTime','0.1')
+config.set('Run','PauseProver','False')
+config.set('Run','Features','E')
+config.set('Run','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
+config.set('Run','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
+config.set('Run','OutputFile','None')
+
+iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'setup.ini')           
+with open(iniLocation, 'wb') as configfile:
+    config.write(configfile)  
+
+# E Ini
+config = ConfigParser.SafeConfigParser()
+config.optionxform = str
+
+if not os.path.isfile(os.path.realpath(os.path.join(args.location,'eproof_ram'))):
+    print 'Cannot find file: %s' % os.path.realpath(os.path.join(args.location,'eproof_ram'))
+    sys.exit(-1)
 
 config.add_section('ATP Settings')
 config.set('ATP Settings','binary',os.path.realpath(os.path.join(args.location,'eproof_ram')))
@@ -127,7 +181,7 @@ config.set('List Parameters','-W'," ".join(["NoSelection","NoGeneration","Select
 # Parse defined modes and extract min/max values
 strategiesConfig = ConfigParser.SafeConfigParser()
 strategiesConfig.optionxform = str
-modesPath = os.path.join('../resultsTmp')
+modesPath = os.path.join('resultsTmp')
 modes = os.listdir(modesPath)
 for mode in modes:
     # TODO: ONLY FOR CASC SETUP
@@ -138,13 +192,11 @@ for mode in modes:
     localStrategiesConfig.add_section(mode)       
     params = open(os.path.join(modesPath,mode)).readlines()[0][1:]
     option = ''
-    resultsLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'results',mode+'.results')
+    resultsLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'results',mode+'.results')
     OS = open(resultsLocation,'w')
     lines = open(os.path.join(modesPath,mode)).readlines()
     OS.write("".join(lines[1:]))
     OS.close()
-    #print mode
-    #print params
     for param in params.split():
         if param.startswith('--'):
             if len(param.split('=')) == 1:
@@ -152,7 +204,6 @@ for mode in modes:
                 value = 'True'
                 if param == '--tstp-in':
                     continue
-                #assert config.has_option('Boolean Parameters', param)
             else:
                 option = param.split('=')[0]
                 value = param.split('=')[1]
@@ -161,21 +212,16 @@ for mode in modes:
             value = param[2:]
             if param == '-s':
                 continue
-            #print option, value
-            #assert config.has_option('List Parameters', option)
-            #possibleVals = (config.get('List Parameters', option)).split()             
-            #assert value in possibleVals
         else:
             print 'Unknown parameter in %s' % mode
         strategiesConfig.set(mode, option, value)
         localStrategiesConfig.set(mode, option, value)
-        iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),'results',mode)           
+        iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'results',mode)           
         with open(iniLocation, 'wb') as configfile:
             localStrategiesConfig.write(configfile)           
-
-#iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'E.ini')           
-#with open(iniLocation, 'wb') as configfile:
-#    config.write(configfile)    
+iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'ATP.ini')           
+with open(iniLocation, 'wb') as configfile:
+    config.write(configfile)    
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'strategies.ini')           
 with open(iniLocation, 'wb') as configfile:
-    strategiesConfig.write(configfile)
+    strategiesConfig.write(configfile)            

@@ -6,12 +6,20 @@ Requirements: Python 2.7.x, Numpy, Scipy (http://www.scipy.org/Installing_SciPy)
 -- Installation of Satallax-MaLeS
 
 1. Install Satallax 2.7 (http://www.ps.uni-saarland.de/~cebrown/satallax/)
-2. Run SatallaxConfig with the installation folder of Satallax as an argument.
-   python SatallaxConfig.py /home/daniel/satallax2.7
+2. Run SatallaxConfig with the installation folder of Satallax as the location argument.
+   python SatallaxConfig.py --location=/home/daniel/satallax2.7
 3. Download the models and put them in the tmp folder
 4. Test Satallax-MaLeS
    MaLeS/males.py -t 30 -p test/PUZ081^1.p
 
 
 
+-- Installation of E-MaLeS
+
+1. Install E1.7 (http://www4.informatik.tu-muenchen.de/~schulz/E/E.html)
+2. Run EConfig with the PROVER folder of the E installtion as the location argument.
+   python EConfig.py --location=/home/daniel/E1/7/PROVER
+3. Download the models and put them in the tmp folder
+4. Test E-MaLeS
+   MaLeS/males.py -t 30 -p test/PUZ001+1.p
 

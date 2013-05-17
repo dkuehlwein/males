@@ -123,7 +123,7 @@ if __name__ == '__main__':
         if solved:
             theorySolved += 1
             solvedProblems.append(p)
-    print 'Theory eval: origNotSolved %s, theorysolved % ' % (len(notSolvedYetOrig),theorySolved)
+    print 'Theory eval: origNotSolved %s, theorysolved %s ' % (len(notSolvedYetOrig),theorySolved)
     #"""
     
     print 'starting practiceTrain'    
