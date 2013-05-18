@@ -30,6 +30,7 @@ config.set('Settings','TmpResultsPickle',os.path.join(path,'tmp','resultsTmp.pic
 config.set('Settings','Clear','True')
 config.set('Settings','LogToFile','False')
 config.set('Settings','LogFile',os.path.join(path,'tmp','satallax.log'))
+config.set('Settings','THFSine','False')
 
 config.add_section('Search')
 config.set('Search','Time','10')

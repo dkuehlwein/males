@@ -21,6 +21,7 @@ from argparse import ArgumentParser
 from createMatrix import create_application_matrix
 from readData import get_normalized_features,load_data
 from RunATP import RunATP
+from thfSine import thf_sine
 
 malesPath = dirname(dirname(realpath(__file__)))
 parser = ArgumentParser(description='E-MaLeS 1.2 --- August 2012.')
@@ -145,6 +146,21 @@ def main(argv = sys.argv[1:]):
             runTimes[strategy.name] = 9999
             if config.getboolean('Run', 'PauseProver'):
                 del processDict[strategy.name]                  
+
+    # Try THF Sine
+    if config.getboolean('Settings', 'THFSine'):
+        logger.info('Running THF Sine with auto mode for 10 seconds')
+        thfSineFile = os.path.join(malesPath,'tmp',os.path.basename(args.problem)+'.thf')
+        thf_sine(args.problem,thfSineFile)
+        sP = RunATP(atpConfig.get('ATP Settings','binary'),'-m mode0','-t 10',10,thfSineFile,maxTime=args.time)
+        proofFound,_countersat,output,_time = sP.run()
+        if proofFound:                    
+            logger.info('\n'+output)                
+            for p in processDict.itervalues():
+                p.terminate()
+            logger.info("Time used: %s seconds" % (time()-beginTime))
+            return 0
+        #os.remove(thfSineFile)
 
     # Get the features of the problem and normalize them
     featureDict[args.problem] = get_normalized_features(args.problem,config.get('Learn', 'Features'),minVals,maxVals)
