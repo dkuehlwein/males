@@ -147,20 +147,24 @@ def main(argv = sys.argv[1:]):
             if config.getboolean('Run', 'PauseProver'):
                 del processDict[strategy.name]                  
 
+    """ Not helping
     # Try THF Sine
-    if config.getboolean('Settings', 'THFSine'):
-        logger.info('Running THF Sine with auto mode for 10 seconds')
+    if config.getboolean('Settings', 'THFSine'):        
         thfSineFile = os.path.join(malesPath,'tmp',os.path.basename(args.problem)+'.thf')
-        thf_sine(args.problem,thfSineFile)
-        sP = RunATP(atpConfig.get('ATP Settings','binary'),'-m mode0','-t 10',10,thfSineFile,maxTime=args.time)
-        proofFound,_countersat,output,_time = sP.run()
-        if proofFound:                    
-            logger.info('\n'+output)                
-            for p in processDict.itervalues():
-                p.terminate()
-            logger.info("Time used: %s seconds" % (time()-beginTime))
-            return 0
-        #os.remove(thfSineFile)
+        if thf_sine(args.problem,thfSineFile):
+            logger.info('Running THF Sine with auto mode for 10 seconds')
+            sP = RunATP(atpConfig.get('ATP Settings','binary'),'-m mode0','-t 10',10,thfSineFile,maxTime=args.time)
+            proofFound,_countersat,output,_time = sP.run()
+            if proofFound:                    
+                logger.info('\n'+output)                
+                for p in processDict.itervalues():
+                    p.terminate()
+                logger.info("Time used: %s seconds" % (time()-beginTime))
+                return 0
+            os.remove(thfSineFile)
+        else:
+            logger.info('THF Sine failed.')
+    """
 
     # Get the features of the problem and normalize them
     featureDict[args.problem] = get_normalized_features(args.problem,config.get('Learn', 'Features'),minVals,maxVals)

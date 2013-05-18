@@ -11,16 +11,21 @@ def thf_sine(inFile, outFile):
     malesPath = dirname(dirname(realpath(__file__)))
     # Run fakefof.pl
     inFileName = os.path.basename(inFile)
-    #inFileName = inFile.split('/')[-1]
     fakeFOFFile = os.path.join(malesPath,'tmp',inFileName+'.fakefof')
-    #print fakeFOFFile
-    fakeFOFStream = open(fakeFOFFile,'w')
+    
     command = os.path.join(malesPath,'bin','fakefof.pl') + ' ' + inFile 
+    #command = './fakefof.pl' + ' ' + inFile
     #print command
     args = shlex.split(command)
     #p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
-    p = subprocess.Popen(args,stdout=fakeFOFStream,stderr=subprocess.STDOUT,cwd = os.path.join(malesPath,'bin'))   
-    p.wait()
+    p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd = os.path.join(malesPath,'bin')).stdout 
+    lines = p.readlines()  
+    fakeFOFStream = open(fakeFOFFile,'w')
+    #print fakeFOFFile
+    #print lines
+    for line in lines:
+        fakeFOFStream.write(line)
+    fakeFOFStream.close()
     
     # Run e_axfilter
     command = os.path.join(malesPath,'bin','e_axfilter') + ' ' + fakeFOFFile 
@@ -30,10 +35,13 @@ def thf_sine(inFile, outFile):
     p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd = os.path.join(malesPath,'bin')).stdout   
     lines = p.readlines()
     p.close() 
+    os.remove(fakeFOFFile)
     sineFiles = []
     for line in lines[1:]:
         line = line.split()
         sineFiles.append(os.path.join(malesPath,'bin',line[-1].strip()))
+    if len(sineFiles) == 1:
+        return False
     
     # Get picked axioms:
     pickedAxioms = []
@@ -46,7 +54,9 @@ def thf_sine(inFile, outFile):
         line = line.split(',')
         axiomName = line[0][4:] 
         pickedAxioms.append(axiomName)
-    #print pickedAxioms     
+    #print pickedAxioms
+    if len(pickedAxioms) == 0:
+        return False
     pickedAxioms = set(pickedAxioms)
     
     # Create new problem, with only the picked axioms
@@ -104,9 +114,9 @@ def thf_sine(inFile, outFile):
                
     OS.close()
     # CleanUp
-    os.remove(fakeFOFFile)
     for sineFile in sineFiles:
         os.remove(sineFile)
+    return True
 
 if __name__ == '__main__':
     os.environ['TPTP'] = '/home/daniel/TPTP/TPTP-v5.4.0'
