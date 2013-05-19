@@ -8,7 +8,7 @@
 # so we can use E's version of SInE.
 
 # put here the path to GetSymbols
-my $getsymbols = "./GetSymbols";
+my $getsymbols = "GetSymbols";
 
 use IPC::Open2;
 my @lines = <>;
@@ -37,7 +37,15 @@ while(<READER>)
   foreach my $sym (@allsyms) 
   {
     $sym =~ m/^ *([^\/]+)[\/].*/ or die "Bad symbol $sym in $_";
-    push(@all1,$1);
+    my $s1 = $1;
+    if($s1 eq '~') {$s1 = 'tptp_not'}
+    elsif($s1 eq '&') {$s1 = 'tptp_and'}
+    elsif($s1 eq '=>') {$s1 = 'tptp_implies'}
+    elsif($s1 eq '<=>') {$s1 = 'tptp_iff'}
+    elsif($s1 eq '|') {$s1 = 'tptp_or'}
+    elsif($s1 eq '!') {$s1 = 'tptp_for'}
+    elsif($s1 eq '?') {$s1 = 'tptp_ex'}
+    push(@all1,$s1);
   }
 
   my $fof = "(" . join("|",@all1) .")";
