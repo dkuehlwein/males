@@ -8,7 +8,7 @@
 # so we can use E's version of SInE.
 
 # put here the path to GetSymbols
-my $getsymbols = "GetSymbols";
+my $getsymbols = "./GetSymbols";
 
 use IPC::Open2;
 my @lines = <>;
