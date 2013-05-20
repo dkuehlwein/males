@@ -62,8 +62,8 @@ config.set('Run','CPUSpeedRatio','1.0')
 config.set('Run','MinRunTime','0.1')
 config.set('Run','PauseProver','False')
 config.set('Run','Features','TPTP')
-config.set('Run','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
-config.set('Run','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
+config.set('Run','StrategiesFile',os.path.join(path,'Satallax','models','strategies.pickle'))
+config.set('Run','FeaturesFile',os.path.join(path,'Satallax','models','features.pickle'))
 config.set('Run','OutputFile','None')
 
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'setup.ini')           
@@ -73,8 +73,8 @@ with open(iniLocation, 'wb') as configfile:
 # Copy Modes and moels
 for mode in os.listdir(os.path.join('Satallax','modes')):
     shutil.copy(os.path.join('Satallax','modes',mode),os.path.join(args.location,'modes'))
-for model in os.listdir(os.path.join('Satallax','models')):
-    shutil.copy(os.path.join('Satallax','models',model),'tmp')
+#for model in os.listdir(os.path.join('Satallax','models')):
+#    shutil.copy(os.path.join('Satallax','models',model),'tmp')
 
     
 # Parse default flags
