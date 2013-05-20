@@ -5,7 +5,7 @@ Requirements: Python 2.7.x, Numpy, Scipy (http://www.scipy.org/Installing_SciPy)
 
 -- Installation of Satallax-MaLeS
 
-1. Install Satallax 2.7 (http://www.ps.uni-saarland.de/~cebrown/satallax/)
+1. Install Satallax 2.7 from Satallax/satallax-2.7.tar.gz
 2. Run SatallaxConfig with the installation folder of Satallax as the location argument.
    ./SatallaxConfig.py --location=/home/daniel/satallax2.7
 3. Test Satallax-MaLeS
@@ -15,7 +15,7 @@ Requirements: Python 2.7.x, Numpy, Scipy (http://www.scipy.org/Installing_SciPy)
 
 -- Installation of E-MaLeS
 
-1. Install E1.7 (http://www4.informatik.tu-muenchen.de/~schulz/E/E.html)
+1. Install E1.7 from E/E.tgz
 2. Run EConfig with the PROVER folder of the E installtion as the location argument.
    python EConfig.py --location=/home/daniel/E1/7/PROVER
 3. Test E-MaLeS
