@@ -52,7 +52,7 @@ config.set('Learn','RegularizationGrid','0.25,0.5,1,2,4,8,16,32,64')
 config.set('Learn','KernelGrid','0.125,0.25,0.5,1,2,4,8,16,32,64')
 config.set('Learn','CrossValidate','True')
 config.set('Learn','CrossValidationFolds','10')
-config.set('Learn','StartStrategies','10')
+config.set('Learn','StartStrategies','20')
 config.set('Learn','StartStrategiesTime','0.5')
 config.set('Learn','CPU Bias','0.3')
 config.set('Learn','Tolerance','0.1')
@@ -70,9 +70,12 @@ iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__fi
 with open(iniLocation, 'wb') as configfile:
     config.write(configfile)  
 
-# Satallax Ini
+# Copy Modes and moels
 for mode in os.listdir(os.path.join('Satallax','modes')):
     shutil.copy(os.path.join('Satallax','modes',mode),os.path.join(args.location,'modes'))
+for model in os.listdir(os.path.join('Satallax','models')):
+    shutil.copy(os.path.join('Satallax','models',model),'tmp')
+
     
 # Parse default flags
 flagsFile = os.path.join(args.location,'src','flags.ml')
@@ -135,8 +138,8 @@ for mode in modes:
                 minVal = val
             if val > maxVal:
                 maxVal = val
-            config.set('Int Min Parameters',option,str(val))
-            config.set('Int Max Parameters',option,str(val))
+            config.set('Int Min Parameters',option,str(minVal))
+            config.set('Int Max Parameters',option,str(maxVal))
             strategies.set(mode,option,str(val))                    
         if config.has_option('Int Def Parameters', line.strip()):
             expectingIntValue = True
