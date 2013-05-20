@@ -178,7 +178,10 @@ config.set('List Parameters','-W'," ".join(["NoSelection","NoGeneration","Select
              "SelectNewComplexAHPExceptRRHorn","PSelectNewComplexAHPExceptRRHorn","SelectNewComplexAHPExceptUniqMaxHorn","PSelectNewComplexAHPExceptUniqMaxHorn",\
              "SelectNewComplexAHPNS","SelectVGNonCR"]))
 
-
+iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'ATP.ini')           
+with open(iniLocation, 'wb') as configfile:
+    config.write(configfile) 
+"""
 # Parse defined modes and extract min/max values
 strategiesConfig = ConfigParser.SafeConfigParser()
 strategiesConfig.optionxform = str
@@ -220,9 +223,8 @@ for mode in modes:
         iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'results',mode)           
         with open(iniLocation, 'wb') as configfile:
             localStrategiesConfig.write(configfile)           
-iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'ATP.ini')           
-with open(iniLocation, 'wb') as configfile:
-    config.write(configfile)    
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'strategies.ini')           
 with open(iniLocation, 'wb') as configfile:
     strategiesConfig.write(configfile)            
+"""
+   
