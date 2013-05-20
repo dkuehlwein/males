@@ -28,6 +28,8 @@ def get_TPTP_features(filename):
     logger = logging.getLogger(__file__)
     features = []
     # TPTP Features
+    TPTP = os.getenv('TPTP', '')
+    filename = os.path.join(TPTP,filename)
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if not os.path.isfile(filename):
         logger.warning('Cannot find problem file. Aborting.')
