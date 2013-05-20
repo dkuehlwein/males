@@ -12,7 +12,7 @@ from createMatrix import create_application_matrix_star
 from multiprocessing import Pool,cpu_count,Manager
 
 mainPath = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-parser = argparse.ArgumentParser(description='Strategy Finder 1.1 --- May 2013.')
+parser = argparse.ArgumentParser(description='Strategy Finder 1.2 --- May 2013.')
 parser.add_argument('--Setup', default = os.path.join(mainPath,'setup.ini'),  
                    help='The ini file with the learn parameters.')
 

@@ -24,7 +24,7 @@ from RunATP import RunATP
 from thfSine import thf_sine
 
 malesPath = dirname(dirname(realpath(__file__)))
-parser = ArgumentParser(description='E-MaLeS 1.2 --- August 2012.')
+parser = ArgumentParser(description='MaLeS 1.2 --- May 2013.')
 parser.add_argument('-t','--time',help='MaLeS will run at most this long.',type=int,default=10)
 parser.add_argument('-p','--problem',help='The problem that you want to solve.',default = '../test/ALG001^5.p')
 parser.add_argument('--Setup', default = os.path.join(malesPath,'setup.ini'),  
@@ -34,17 +34,13 @@ parser.add_argument('--ATP', default = os.path.join(malesPath,'ATP.ini'),
 
 def get_run_time(preferedRunTime,maxTime,startTime,ceil=True):
     timeSpent = time()-startTime
-    timeLeft = round(maxTime - timeSpent+0.05,1)
+    timeLeft = round(maxTime - timeSpent+0.5,1)
     if ceil:
-        preferedRunTime = round(preferedRunTime+0.05,1)        
-    #print timeSpend
-    #timeAvailable = maxTime-preferedRunTime
+        preferedRunTime = round(preferedRunTime+0.5,1)        
     if preferedRunTime <= timeLeft:
-        #return int(preferedRunTime)
-        return max(0.1,preferedRunTime)
+        return max(0.5,preferedRunTime)
     else:
-        #return max(0,int(timeLeft))
-        return max(0.1,timeLeft)
+        return max(0.5,timeLeft)
 
 def shutdown(processDict):
     for p in processDict.itervalues():
@@ -132,7 +128,6 @@ def main(argv = sys.argv[1:]):
         logger.info("Running %s for %s seconds" % (strategy.name,runTime))
         strategyString,timeString = strategy.get_atp_string(atpConfig,args.time)
         sP = RunATP(atpConfig.get('ATP Settings','binary'),strategyString,timeString,runTime,args.problem,maxTime=args.time)
-#        sP = RunE(args.problem,strategy.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
         if config.getboolean('Run', 'PauseProver'):
             processDict[strategy.name] = sP
         proofFound,_countersat,output,_time = sP.run()
@@ -164,7 +159,7 @@ def main(argv = sys.argv[1:]):
             os.remove(thfSineFile)
         else:
             logger.info('THF Sine failed.')
-    """
+    #"""
 
     # Get the features of the problem and normalize them
     featureDict[args.problem] = get_normalized_features(args.problem,config.get('Learn', 'Features'),minVals,maxVals)
@@ -192,7 +187,6 @@ def main(argv = sys.argv[1:]):
         sortedPredictions = list(argsort(predictions))
         for bestStratIndex in sortedPredictions:
             bestStrat = strategies[bestStratIndex]
-            #preferedRunTime = int(config.getfloat('Run', 'CPUSpeedRatio') * predictions[bestStratIndex])+1
             preferedRunTime = config.getfloat('Run', 'CPUSpeedRatio') * predictions[bestStratIndex]
             runTime= get_run_time(preferedRunTime,args.time,beginTime)
             # a) if is wasn't tried before
@@ -224,7 +218,6 @@ def main(argv = sys.argv[1:]):
         else:
             bestStratString,bestStratTimeString = bestStrat.get_atp_string(atpConfig,args.time)
             sP = RunATP(atpConfig.get('ATP Settings','binary'),bestStratString,bestStratTimeString,runTime,args.problem,maxTime=args.time)
-#            sP = RunE(args.problem,bestStrat.to_string(),runTime,maxTime,args.proof,config.getboolean('Run', 'PauseProver'))
             if config.getboolean('Run', 'PauseProver'):
                 processDict[bestStrat.name] = sP    
             proofFound,_countersat,output,_time = sP.run()
