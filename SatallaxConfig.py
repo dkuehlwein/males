@@ -1,6 +1,14 @@
 #! /usr/bin/env python
 
-import os,ConfigParser,argparse,shutil
+
+import os,sys
+
+path = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
+malesPath = os.path.join(path,'MaLeS')
+if not malesPath in sys.path:
+        sys.path.insert(1, malesPath)
+
+import ConfigParser,argparse,shutil
 from multiprocessing import cpu_count
 
 parser = argparse.ArgumentParser(description='Automatically creates an INI file for Satallax given its location.')
@@ -15,15 +23,13 @@ if TPTP == None:
 if not os.path.exists('tmp'):
     os.mkdir('tmp')    
 
-path = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
-
 config = ConfigParser.SafeConfigParser()
 config.optionxform = str
 config.add_section('Settings')
 config.set('Settings','TPTP',TPTP)
 config.set('Settings','TmpDir',os.path.join(path,'tmp')) 
 config.set('Settings','Cores',str(cpu_count()-1))
-config.set('Settings','ResultsDir',os.path.join(path,'results'))
+config.set('Settings','ResultsDir',os.path.join(path,'Satallax','results'))
 config.set('Settings','ResultsPickle',os.path.join(path,'tmp','results.pickle'))
 config.set('Settings','TmpResultsDir',os.path.join(path,'resultsTmp'))
 config.set('Settings','TmpResultsPickle',os.path.join(path,'tmp','resultsTmp.pickle'))

@@ -32,7 +32,7 @@ def get_TPTP_features(filename):
     filename = os.path.join(TPTP,filename)
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if not os.path.isfile(filename):
-        logger.warning('Cannot find problem file. Aborting.')
+        logger.warning('Cannot find problem file %s. Aborting.' % filename)
         sys.exit(-1)        
     command = "%s/bin/TPTP_features -i %s" % (path,filename)
     #print command
@@ -63,7 +63,7 @@ def get_e_features(filename):
     filename = os.path.join(TPTP,filename)    
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if not os.path.isfile(filename):
-        logger.warning('Cannot find problem file. Aborting.')
+        logger.warning('Cannot find problem file%s. Aborting.' % filename)
         sys.exit(-1)        
     command = "%s/bin/classify_problem -caaaaaaaaaaaaa --tstp-in %s" % (path,filename)
     #print command
