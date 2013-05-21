@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os,sys
+import os,sys,shutil
 
 path = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 malesPath = os.path.join(path,'MaLeS')
@@ -25,6 +25,8 @@ if not os.path.exists('tmp'):
 Eresults = os.path.join('E','results')
 if not os.path.exists(Eresults):
     os.mkdir(Eresults)    
+
+shutil.copy(os.path.join(args.location,'classify_problem'),os.path.join(path,'bin'))
 
 
 config = ConfigParser.SafeConfigParser()
