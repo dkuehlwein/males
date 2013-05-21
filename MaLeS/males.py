@@ -267,7 +267,7 @@ def main(argv = sys.argv[1:]):
                 pKMs[pKMi] = []
         
 
-    logger.info("SZS Status Timeout")
+    logger.info("SZS status Timeout")
     for p in processDict.itervalues():
         p.terminate()
     logger.info("Time used: %s seconds" % (time()-beginTime))
