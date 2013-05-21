@@ -60,6 +60,9 @@ def get_e_features(filename):
     features = []
     # E Features
     TPTP = os.getenv('TPTP', '')
+    if filename.startswith('/scratch/kuehlwein'):
+        filename = filename.split('/')
+        filename = '/'.join(filename[-3:])
     filename = os.path.join(TPTP,filename)    
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if not os.path.isfile(filename):
