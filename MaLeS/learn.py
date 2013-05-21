@@ -170,7 +170,8 @@ if __name__ == '__main__':
         pool.join()  
         dump_data(KMs,config.get('Learn', 'ModelsFile') )
         logger.info('Done')
-                
+        
+        logger.info('Learning strategy models.')        
         pool = Pool(processes = cpu_count())
         strategies = pool.map(apply_strat,itertools.izip(strategies,\
                                                          itertools.repeat(notSolvedYet),\
