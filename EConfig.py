@@ -1,6 +1,13 @@
 #! /usr/bin/env python
 
-import os,ConfigParser,argparse,sys
+import os,sys
+
+path = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
+malesPath = os.path.join(path,'MaLeS')
+if not malesPath in sys.path:
+        sys.path.insert(1, malesPath)
+
+import ConfigParser,argparse
 from multiprocessing import cpu_count
 
 parser = argparse.ArgumentParser(description='Automatically creates an INI file for E given its location.')
@@ -15,7 +22,10 @@ if TPTP == None:
 if not os.path.exists('tmp'):
     os.mkdir('tmp')    
 
-path = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
+Eresults = os.path.join('E','results')
+if not os.path.exists(Eresults):
+    os.mkdir(Eresults)    
+
 
 config = ConfigParser.SafeConfigParser()
 config.optionxform = str
@@ -23,9 +33,9 @@ config.add_section('Settings')
 config.set('Settings','TPTP',TPTP)
 config.set('Settings','TmpDir',os.path.join(path,'tmp')) 
 config.set('Settings','Cores',str(cpu_count()-1))
-config.set('Settings','ResultsDir',os.path.join(path,'results'))
+config.set('Settings','ResultsDir',os.path.join(path,'E','results'))
 config.set('Settings','ResultsPickle',os.path.join(path,'tmp','results.pickle'))
-config.set('Settings','TmpResultsDir',os.path.join(path,'resultsTmp'))
+config.set('Settings','TmpResultsDir',os.path.join(path,'E','resultsTmp'))
 config.set('Settings','TmpResultsPickle',os.path.join(path,'tmp','resultsTmp.pickle'))
 config.set('Settings','Clear','True')
 config.set('Settings','LogToFile','False')
@@ -181,11 +191,11 @@ config.set('List Parameters','-W'," ".join(["NoSelection","NoGeneration","Select
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'ATP.ini')           
 with open(iniLocation, 'wb') as configfile:
     config.write(configfile) 
-"""
+#"""
 # Parse defined modes and extract min/max values
 strategiesConfig = ConfigParser.SafeConfigParser()
 strategiesConfig.optionxform = str
-modesPath = os.path.join('resultsTmp')
+modesPath = os.path.join('E','resultsTmp')
 modes = os.listdir(modesPath)
 for mode in modes:
     # TODO: ONLY FOR CASC SETUP
@@ -196,7 +206,7 @@ for mode in modes:
     localStrategiesConfig.add_section(mode)       
     params = open(os.path.join(modesPath,mode)).readlines()[0][1:]
     option = ''
-    resultsLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'results',mode+'.results')
+    resultsLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'E','results',mode+'.results')
     OS = open(resultsLocation,'w')
     lines = open(os.path.join(modesPath,mode)).readlines()
     OS.write("".join(lines[1:]))
@@ -220,11 +230,11 @@ for mode in modes:
             print 'Unknown parameter in %s' % mode
         strategiesConfig.set(mode, option, value)
         localStrategiesConfig.set(mode, option, value)
-        iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'results',mode)           
-        with open(iniLocation, 'wb') as configfile:
-            localStrategiesConfig.write(configfile)           
+    iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'E','results',mode)           
+    with open(iniLocation, 'wb') as configfile:
+        localStrategiesConfig.write(configfile)           
 iniLocation = os.path.join(os.path.realpath(os.path.dirname(os.path.abspath(__file__))),'strategies.ini')           
 with open(iniLocation, 'wb') as configfile:
     strategiesConfig.write(configfile)            
-"""
+#"""
    
