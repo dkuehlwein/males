@@ -8,7 +8,9 @@ Requirements: Python 2.7.x, Numpy, Scipy (http://www.scipy.org/Installing_SciPy)
 1. Install Satallax 2.7 from Satallax/satallax-2.7.tar.gz
 2. Run SatallaxConfig with the installation folder of Satallax as the location argument.
    ./SatallaxConfig.py --location=/home/daniel/satallax2.7
-3. Test Satallax-MaLeS
+3. Learn the models
+   MaLeS/learn.py --Setup=setup.ini
+4. Test Satallax-MaLeS
    MaLeS/males.py -t 30 -p test/PUZ081^1.p
 
 
@@ -18,6 +20,8 @@ Requirements: Python 2.7.x, Numpy, Scipy (http://www.scipy.org/Installing_SciPy)
 1. Install E1.7 from E/E.tgz
 2. Run EConfig with the PROVER folder of the E installtion as the location argument.
    python EConfig.py --location=/home/daniel/E1/7/PROVER
-3. Test E-MaLeS
+3. Learn the models
+   MaLeS/learn.py --Setup=setup.ini
+4. Test E-MaLeS
    MaLeS/males.py -t 30 -p test/PUZ001+1.p
 
