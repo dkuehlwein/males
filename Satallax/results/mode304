@@ -1,0 +1,5 @@
+[mode304]
+E_TIMEOUT = 1
+E_PERIOD = 10
+USE_E = true
+
