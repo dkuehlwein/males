@@ -8,6 +8,20 @@ import copy,os,ConfigParser,numpy
 from RunATP import RunATP
 from CrossValidation import cross_validate
 
+def create_leo_string(parameters):
+    parameterList = []
+    for param,val in sorted(parameters.items()):
+        if val == False:
+            continue
+        elif param.startswith('--') and (val == True or val == 'True'):
+            parameterList.append(param)
+        elif param.startswith('--'):
+            parameterList.append(' '.join([param,val]))
+        else:
+            parameterList.append(''.join([param,val]))
+    return ' '.join(parameterList)
+
+
 def create_E_string(parameters):
     parameterList = []
     for param,val in sorted(parameters.items()):
@@ -94,6 +108,9 @@ class Strategy(object):
         if (atpConfig.get('ATP Settings','strategy')=='E'):
             strategyString = " ".join([create_E_string(self.parameters),atpConfig.get('ATP Settings','default')])
             timeString = "".join([atpConfig.get('ATP Settings','time'),str(int(time+0.5))])        
+        if (atpConfig.get('ATP Settings','strategy')=='Leo'):
+            strategyString = " ".join([create_leo_string(self.parameters),atpConfig.get('ATP Settings','default')])
+            timeString = "".join([atpConfig.get('ATP Settings','time'),str(int(time+0.5))])    
         return strategyString,timeString
 
     def run(self,problem,runTime,atpConfig):
