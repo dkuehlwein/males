@@ -110,7 +110,7 @@ class Strategy(object):
             timeString = "".join([atpConfig.get('ATP Settings','time'),str(int(time+0.5))])        
         if (atpConfig.get('ATP Settings','strategy')=='Leo'):
             strategyString = " ".join([create_leo_string(self.parameters),atpConfig.get('ATP Settings','default')])
-            timeString = "".join([atpConfig.get('ATP Settings','time'),str(int(time+0.5))])    
+            timeString = " ".join([atpConfig.get('ATP Settings','time'),str(int(time+0.5))])    
         return strategyString,timeString
 
     def run(self,problem,runTime,atpConfig):
