@@ -62,7 +62,7 @@ class RunATP(object):
     def parse_output(self,output):
         proofFound = False
         countersat = False
-        print output
+        #print output
         for line in output.split('\n'):
             # FOF - Theorem
             if line.startswith('# SZS status Theorem') or line.startswith('% SZS status Theorem') :
@@ -113,18 +113,36 @@ class RunATP(object):
     def terminate(self):        
         # TODO: There has to be a better way            
         #command = 'ps h --ppid %s -o pid' % (self.pid)
-        command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (self.pid)
+        #command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (self.pid)
+        command = 'ps -o pid,ppid'
+        #print command
+        pids = []
         args = shlex.split(command)
         process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-        output = process.communicate()[0]            
-        pids = [self.pid] + [int(p) for p in output.split()]
+        output = process.communicate()[0]
+        #print output
+        for line in output.split('\n')[1:]:
+            line = line.split()
+            if not len(line) == 2:
+                continue
+            if int(line[1]) == self.pid:
+                pids.append(int(line[1]))
+                    
         # Grandchildren 
         for p in pids:
             #command = 'ps h --ppid %s -o pid' % (p)
-            command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (p)
+            #command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (p)
+            command = 'ps -o pid,ppid'
             args = shlex.split(command)
             process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)                
-            pids.extend([int(p) for p in (process.communicate()[0]).split()])
+            output = process.communicate()[0]
+            for line in output.split('\n')[1:]:
+                line = line.split()
+                if not len(line) == 2:
+                    continue
+                if int(line[1]) == self.pid:
+                    pids.append(int(line[1]))
+            #pids.extend([int(p) for p in (process.communicate()[0]).split()])
         for p in pids:
             try: 
                 kill(p,SIGKILL)
