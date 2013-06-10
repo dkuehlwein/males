@@ -30,6 +30,18 @@ parser.add_argument('--Strategies', default = '../E/strategies.ini',
 
 if __name__ == '__main__':    
     args = parser.parse_args(sys.argv[1:])
+    if not os.path.exists(args.Setup):
+        print 'Cannot find Setup argument at %s' % args.Setup
+        sys.exit(-1)
+    
+    if not os.path.exists(args.ATP):
+        print 'Cannot find ATP argument at %s' % args.ATP
+        sys.exit(-1)    
+
+    if not os.path.exists(args.Strategies):
+        print 'Cannot find Strategies argument at %s' % args.Strategies
+        sys.exit(-1)    
+    
     searchConfig = ConfigParser.SafeConfigParser()
     searchConfig.optionxform = str
     searchConfig.read(args.Setup)
