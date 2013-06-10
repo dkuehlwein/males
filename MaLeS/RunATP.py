@@ -62,6 +62,7 @@ class RunATP(object):
     def parse_output(self,output):
         proofFound = False
         countersat = False
+        print output
         for line in output.split('\n'):
             # FOF - Theorem
             if line.startswith('# SZS status Theorem') or line.startswith('% SZS status Theorem') :
@@ -111,11 +112,12 @@ class RunATP(object):
     
     def terminate(self):        
         # TODO: There has to be a better way            
-        command = 'ps h --ppid %s -o pid' % (self.pid)
+        #command = 'ps h --ppid %s -o pid' % (self.pid)
+        command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (self.pid)
         args = shlex.split(command)
         process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         output = process.communicate()[0]            
-        pids = [int(p) for p in output.split()]
+        pids = [self.pid] + [int(p) for p in output.split()]
         # Grandchildren 
         for p in pids:
             command = 'ps h --ppid %s -o pid' % (p)
