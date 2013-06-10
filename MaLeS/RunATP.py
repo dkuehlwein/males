@@ -120,7 +120,8 @@ class RunATP(object):
         pids = [self.pid] + [int(p) for p in output.split()]
         # Grandchildren 
         for p in pids:
-            command = 'ps h --ppid %s -o pid' % (p)
+            #command = 'ps h --ppid %s -o pid' % (p)
+            command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (p)
             args = shlex.split(command)
             process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)                
             pids.extend([int(p) for p in (process.communicate()[0]).split()])
