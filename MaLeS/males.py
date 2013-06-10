@@ -52,14 +52,14 @@ def main(argv = sys.argv[1:]):
     config = ConfigParser.SafeConfigParser()
     config.optionxform = str
     if not os.path.exists(args.Setup):
-        print 'Cannot find setup.ini at %s' % args.Setup
+        print 'Cannot find Setup argument at %s' % args.Setup
         sys.exit(-1)
     config.read(args.Setup)
     
     atpConfig = ConfigParser.SafeConfigParser()
     atpConfig.optionxform = str
     if not os.path.exists(args.ATP):
-        print 'Cannot find ATP.ini at %s' % args.ATP
+        print 'Cannot find ATP argument at %s' % args.ATP
         sys.exit(-1)    
     atpConfig.read(args.ATP)    
 
