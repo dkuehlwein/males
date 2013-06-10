@@ -147,7 +147,7 @@ if __name__ == '__main__':
         run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
         # Apply Strategy on all problems.
         #"""
-        pool = Pool(processes = cpu_count()-1)
+        pool = Pool(processes = searchConfig.getint('Settings', 'Cores'))
         results = pool.map_async(run_strategy,[(currentStrategy,p,ATPTime,atpConfig) for p in problems])
         pool.close()
         pool.join()        
