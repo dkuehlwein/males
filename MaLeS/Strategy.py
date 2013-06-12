@@ -5,6 +5,7 @@ Created on May 2, 2013
 '''
 
 import copy,os,ConfigParser,numpy
+import logging
 from RunATP import RunATP
 from CrossValidation import cross_validate
 
@@ -55,10 +56,14 @@ def load_strategies(folder,bias = 0.0):
         if not stratFile.endswith('.results'):
             continue
         stratName = stratFile.split('.')[0]
-        strategy = load_strategy(os.path.join(folder,stratName))
         IS = open(os.path.join(folder,stratFile),'r')
         lines = IS.readlines()
-        IS.close()            
+        IS.close()    
+        if len(lines) == 0:   
+            logger = logging.getLogger(__file__)
+            logger.debug('Found empty file: %s' % os.path.join(folder,stratFile))
+            continue        
+        strategy = load_strategy(os.path.join(folder,stratName))
         for line in lines[1:]:
             strategy.solvedProblems[line.split()[0]] = float(line.split()[1])+bias   
         strategies.append(strategy)
