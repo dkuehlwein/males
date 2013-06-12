@@ -185,7 +185,7 @@ if __name__ == '__main__':
                 for rS in randomStrategies:
                     rS.runForFullTime = False
                 assert not randomStrategies[0].runForFullTime                        
-                pool = Pool(processes = cpu_count()-1)                
+                pool = Pool(processes = searchConfig.getint('Settings', 'Cores'))                
                 resultsLS = pool.map_async(run_strategy,[(randomStrategy,problem,ATPTime,atpConfig) for randomStrategy in randomStrategies])
                 pool.close()
                 pool.join()                         
