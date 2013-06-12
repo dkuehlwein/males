@@ -14,6 +14,7 @@ from collections import deque
 from Problem import getAllProblems
 from cPickle import dump,load  
 from multiprocessing import Pool,cpu_count
+from random import randrange
 
 def run_strategy((s,p,time,atpConfig)):            
     return s.run(p,time,atpConfig)
@@ -147,10 +148,15 @@ if __name__ == '__main__':
         run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
         # Apply Strategy on all problems.
         #"""
+        #results = []
+        #for p in problems:
+        #    results.append(run_strategy((currentStrategy,p,ATPTime,atpConfig)))
+        #"""
         pool = Pool(processes = searchConfig.getint('Settings', 'Cores'))
         results = pool.map_async(run_strategy,[(currentStrategy,p,ATPTime,atpConfig) for p in problems])
         pool.close()
-        pool.join()        
+        pool.join()
+        #"""        
         for problem,(proofFound,timeNeeded) in zip(problems,results.get()):           
             problem.addStrategy(currentStrategy,timeNeeded)
             # If proof found, update everything.
@@ -173,7 +179,9 @@ if __name__ == '__main__':
                 logger.debug('Good strategy found. Starting random local search.')
                 logger.debug('Best Time \t Time needed \t Problem \t Strategy Name')         
                 # Create random Strategies
-                randomStrategies = [Parameters.perturb(currentStrategy,searchConfig.getint('Search','WalkLength')) for _i in range(searchConfig.getint('Search','Walks'))] 
+                defaultWalkLength = searchConfig.getint('Search','WalkLength')
+                walkLength = randrange(1,defaultWalkLength+1)
+                randomStrategies = [Parameters.perturb(currentStrategy,walkLength) for _i in range(searchConfig.getint('Search','Walks'))] 
                 for rS in randomStrategies:
                     rS.runForFullTime = False
                 assert not randomStrategies[0].runForFullTime                        
