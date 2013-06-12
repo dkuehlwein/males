@@ -143,14 +143,13 @@ class RunATP(object):
                 if int(line[1]) == self.pid:
                     pids.append(int(line[1]))
             #pids.extend([int(p) for p in (process.communicate()[0]).split()])
+        if not self.is_finished():            
+            self.process.kill()
         for p in pids:
             try: 
                 kill(p,SIGKILL)
             except OSError:
                 pass
-        if not self.is_finished():            
-            self.process.kill()
-        
 
 if __name__ == '__main__':  
     filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SEV/SEV308^5.p'  
