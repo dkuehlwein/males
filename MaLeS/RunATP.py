@@ -126,7 +126,7 @@ class RunATP(object):
             if not len(line) == 2:
                 continue
             if int(line[1]) == self.pid:
-                pids.append(int(line[1]))
+                pids.append(int(line[0]))
                     
         # Grandchildren 
         for p in pids:
@@ -140,8 +140,9 @@ class RunATP(object):
                 line = line.split()
                 if not len(line) == 2:
                     continue
-                if int(line[1]) == self.pid:
-                    pids.append(int(line[1]))
+                if int(line[1]) == p:
+                    pids.append(int(line[0]))
+                    #print pids,line[0],self.pid
             #pids.extend([int(p) for p in (process.communicate()[0]).split()])
         if not self.is_finished():            
             self.process.kill()
@@ -152,8 +153,13 @@ class RunATP(object):
                 pass
 
 if __name__ == '__main__':  
-    filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SEV/SEV308^5.p'  
-    atp = RunATP('/home/daniel/TPTP/satallax-2.7/bin/satallax.opt','-m mode274','-t',5,filename,pause=True)
+    filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SEU/SEU705^1.p'  
+    atp = RunATP('/home/daniel/TPTP/leo2/bin/leo',
+                 #'--atp e=/home/daniel/TPTP/E1.7/PROVER/eprover --noslices',
+                 '--atp e=/home/daniel/TPTP/E1.7/PROVER/eprover',
+                 '-t 300',
+                 30,filename,pause=False)
+    print 'start'
     atp.run()
     print atp.is_finished()
     i = 0
@@ -164,8 +170,10 @@ if __name__ == '__main__':
             atp.start_pause()
             print "Paused"
         elif i == 3:
+            print atp.pid,atp.process.pid
             atp.terminate()
             print 'Killed'
+            print 'Is finishes?',atp.is_finished()
         elif i == 10:
             print "Continued"
             atp.cont()
@@ -174,7 +182,7 @@ if __name__ == '__main__':
             print atp.get_output()
             break
     print 'Final Sleep'
-    sleep(10)
-    print atp.is_finished()
+    #sleep(10)
+    #print atp.is_finished()
     
     
