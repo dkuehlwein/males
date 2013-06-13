@@ -61,6 +61,10 @@ def greedy_startStrategies(strategies,runTime=1.0,number=10):
 
 if __name__ == '__main__':
     args = parser.parse_args(sys.argv[1:])
+    if not os.path.exists(args.Setup):
+        print 'Cannot find Setup argument at %s' % args.Setup
+        sys.exit(-1)
+            
     config = ConfigParser.SafeConfigParser()
     config.optionxform = str
     config.read(args.Setup)

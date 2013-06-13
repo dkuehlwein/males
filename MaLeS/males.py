@@ -49,34 +49,23 @@ def shutdown(processDict):
         
 def main(argv = sys.argv[1:]):
     args = parser.parse_args(argv)
-    config = ConfigParser.SafeConfigParser()
-    config.optionxform = str
     if not os.path.exists(args.Setup):
         print 'Cannot find Setup argument at %s' % args.Setup
         sys.exit(-1)
+    if not os.path.exists(args.ATP):
+        print 'Cannot find ATP argument at %s' % args.ATP
+        sys.exit(-1)    
+    if not os.path.exists(args.problem):
+        print 'Cannot find problem file: %s' % args.problem
+        sys.exit(-1)    
+    
+    config = ConfigParser.SafeConfigParser()
+    config.optionxform = str
     config.read(args.Setup)
     
     atpConfig = ConfigParser.SafeConfigParser()
     atpConfig.optionxform = str
-    if not os.path.exists(args.ATP):
-        print 'Cannot find ATP argument at %s' % args.ATP
-        sys.exit(-1)    
     atpConfig.read(args.ATP)    
-
-    if not os.path.exists(args.problem):
-        print 'Cannot find problem file: %s' % args.problem
-        sys.exit(-1)    
-        
-    # Debug
-    #args.problem = "/home/daniel/workspace/E-MaLeS1.1/test/compts_1__t20_compts_1.p"
-    #args.problem = "/home/daniel/TPTP/MPTP2078/chainy/compts_1__t16_compts_1.p"
-    #args.problem = "/home/daniel/TPTP/TPTP-v5.4.0/Problems/HWV/HWV041+1.p"
-    #startStrategies = [Strategy("Auto","-xAuto -tAuto ",defaultTime=300)]
-    #startTime = 5
-    #args.TMPDIR = "/var/tmp/"
-    #args.TPTP = "/home/daniel/TPTP/TPTP-v5.4.0"
-    #maxTime = 300  
-        
            
     logFile = malesPath+'/tmp/'+args.problem.split('/')[-1]+'.log'
     os.environ['TPTP'] = config.get('Settings', 'TPTP')

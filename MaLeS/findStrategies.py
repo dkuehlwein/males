@@ -33,12 +33,10 @@ if __name__ == '__main__':
     args = parser.parse_args(sys.argv[1:])
     if not os.path.exists(args.Setup):
         print 'Cannot find Setup argument at %s' % args.Setup
-        sys.exit(-1)
-    
+        sys.exit(-1)    
     if not os.path.exists(args.ATP):
         print 'Cannot find ATP argument at %s' % args.ATP
-        sys.exit(-1)    
-
+        sys.exit(-1)
     if not os.path.exists(args.Strategies):
         print 'Cannot find Strategies argument at %s' % args.Strategies
         sys.exit(-1)    
@@ -145,7 +143,7 @@ if __name__ == '__main__':
         logger.info('Trying Strategy %s. %s strategies left in queue.' % (currentStrategy.name,len(strategiesQueue)))        
         logger.debug('Problem \t Proof Found \t Time Needed \t Best Time so far')   
         triedStrategies = triedStrategies.union([currentStrategy.to_string()])   
-        run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
+        #run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
         # Apply Strategy on all problems.
         #"""
         #results = []
