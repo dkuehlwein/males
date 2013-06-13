@@ -5,6 +5,7 @@ Created on Aug 16, 2012
 '''
 
 import shlex,subprocess
+from collections import deque
 from os import kill
 from os.path import realpath,dirname
 from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL
@@ -111,47 +112,25 @@ class RunATP(object):
         return self.parse_output(stdout)
     
     def terminate(self):        
-        # TODO: There has to be a better way            
-        #command = 'ps h --ppid %s -o pid' % (self.pid)
-        #command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (self.pid)
-        command = 'ps -o pid,ppid'
-        #print command
-        pids = []
-        args = shlex.split(command)
-        process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-        output = process.communicate()[0]
-        #print output
-        for line in output.split('\n')[1:]:
-            line = line.split()
-            if not len(line) == 2:
-                continue
-            if int(line[1]) == self.pid:
-                pids.append(int(line[0]))
-                    
-        # Grandchildren 
-        for p in pids:
-            #command = 'ps h --ppid %s -o pid' % (p)
-            #command = 'ps -o pid,ppid | grep "%s$" | sed -e "s/ *//" -e "s/ .*//"' % (p)
+        queue = deque([self.pid])
+        while not len(queue) == 0:
+            p = queue.popleft()
             command = 'ps -o pid,ppid'
             args = shlex.split(command)
-            process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)                
+            process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
             output = process.communicate()[0]
+            #print output
             for line in output.split('\n')[1:]:
                 line = line.split()
                 if not len(line) == 2:
                     continue
                 if int(line[1]) == p:
-                    pids.append(int(line[0]))
-                    #print pids,line[0],self.pid
-            #pids.extend([int(p) for p in (process.communicate()[0]).split()])
-        if not self.is_finished():            
-            self.process.kill()
-        for p in pids:
-            try: 
-                kill(p,SIGKILL)
-            except OSError:
-                pass
-
+                    queue.append(int(line[0]))
+                try: 
+                    kill(p,SIGKILL)
+                except OSError:
+                    pass
+  
 if __name__ == '__main__':  
     filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SEU/SEU705^1.p'  
     atp = RunATP('/home/daniel/TPTP/leo2/bin/leo',
