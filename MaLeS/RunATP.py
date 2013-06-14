@@ -7,8 +7,8 @@ Created on Aug 16, 2012
 import shlex,subprocess
 from collections import deque
 from os import kill
-from os.path import realpath,dirname
-from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL
+from os.path import realpath,dirname,exists
+from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL,SIGTERM
 from time import sleep,time
 
 class Alarm(Exception):
@@ -53,7 +53,8 @@ class RunATP(object):
             if self.pause:
                 self.start_pause()
             else:                
-                self.terminate()                
+                self.terminate()
+                #pass # TODO:                
             return False,False,None,self.runTime
         endTime = time()
         usedTime = endTime-startTime
@@ -127,19 +128,22 @@ class RunATP(object):
                 if int(line[1]) == p:
                     queue.append(int(line[0]))
                 try: 
-                    kill(p,SIGKILL)
+                    kill(p,SIGTERM)
+                    # TODO: UNIX ONLY
+                    while exists("/proc/%" % p):
+                        kill(p,SIGKILL)
                 except OSError:
                     pass
   
 if __name__ == '__main__':  
-    filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SEU/SEU705^1.p'  
+    filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SYO/SYO534^1.p'  
     atp = RunATP('/home/daniel/TPTP/leo2/bin/leo',
-                 #'--atp e=/home/daniel/TPTP/E1.7/PROVER/eprover --noslices',
-                 '--atp e=/home/daniel/TPTP/E1.7/PROVER/eprover',
-                 '-t 300',
-                 30,filename,pause=False)
+                 '--atptimeout 64 --notReplAndrewsEQ --relevancefilter 1 --atp e=/home/daniel/TPTP/E1.7/PROVER/eprover --noslices',
+                 #'--atp e=/home/daniel/TPTP/E1.7/PROVER/eprover',
+                 '-t 100',
+                 10,filename,pause=False)
     print 'start'
-    atp.run()
+    print atp.run()
     print atp.is_finished()
     i = 0
     while True:
@@ -160,6 +164,7 @@ if __name__ == '__main__':
         if atp.is_finished():
             print atp.get_output()
             break
+    print atp.is_finished()
     print 'Final Sleep'
     #sleep(10)
     #print atp.is_finished()
