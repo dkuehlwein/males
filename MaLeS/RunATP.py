@@ -124,7 +124,7 @@ class RunATP(object):
         sleep(0.01)
         if not self.is_finished(): # Still hasn't exited.
             try:
-                os.kill(-self.proc.pid, SIGKILL)
+                os.kill(-self.pid, SIGKILL)
             except OSError, e:
                 if e.errno != errno.ESRCH:
                     raise      
