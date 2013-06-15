@@ -13,7 +13,7 @@ from Strategy import Strategy,load_strategies
 from collections import deque
 from Problem import getAllProblems
 from cPickle import dump,load  
-from multiprocessing import Pool,cpu_count
+from multiprocessing import Pool
 from random import randrange
 
 def run_strategy((s,p,time,atpConfig)):            
@@ -139,22 +139,14 @@ if __name__ == '__main__':
             currentStrategy.runForFullTime = True
         currentStrategy.save(os.path.join(searchConfig.get('Settings', 'ResultsDir'),currentStrategy.name))
         OS = open(os.path.join(searchConfig.get('Settings', 'ResultsDir'),currentStrategy.name+'.results'),'w')
-        #OS.write('# %s\n' % currentStrategy.to_string())
         logger.info('Trying Strategy %s. %s strategies left in queue.' % (currentStrategy.name,len(strategiesQueue)))        
         logger.debug('Problem \t Proof Found \t Time Needed \t Best Time so far')   
-        triedStrategies = triedStrategies.union([currentStrategy.to_string()])   
-        #run_strategy([currentStrategy,problems[0],ATPTime,atpConfig])     
+        triedStrategies = triedStrategies.union([currentStrategy.to_string()])        
         # Apply Strategy on all problems.
-        #"""
-        #results = []
-        #for p in problems:
-        #    results.append(run_strategy((currentStrategy,p,ATPTime,atpConfig)))
-        #"""
         pool = Pool(processes = searchConfig.getint('Settings', 'Cores'))
         results = pool.map_async(run_strategy,[(currentStrategy,p,ATPTime,atpConfig) for p in problems])
         pool.close()
         pool.join()
-        #"""        
         for problem,(proofFound,timeNeeded) in zip(problems,results.get()):           
             problem.addStrategy(currentStrategy,timeNeeded)
             # If proof found, update everything.
