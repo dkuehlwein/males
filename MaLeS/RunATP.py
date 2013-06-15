@@ -4,10 +4,10 @@ Created on Aug 16, 2012
 @author: daniel
 '''
 
-import shlex,subprocess
+import shlex,subprocess,os,errno
 from collections import deque
-from os import kill
-from os.path import realpath,dirname,exists
+from os import kill,getpgid
+from os.path import realpath,dirname
 from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL,SIGTERM
 from time import sleep,time
 
@@ -43,7 +43,7 @@ class RunATP(object):
         #print command
         args = shlex.split(command)
         startTime = time()
-        self.process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        self.process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,preexec_fn=os.setsid)
         self.pid = self.process.pid
         setitimer(ITIMER_REAL,self.runTime)
         try:
@@ -53,8 +53,7 @@ class RunATP(object):
             if self.pause:
                 self.start_pause()
             else:                
-                self.terminate()
-                #pass # TODO:                
+                self.terminate()            
             return False,False,None,self.runTime
         endTime = time()
         usedTime = endTime-startTime
@@ -113,13 +112,32 @@ class RunATP(object):
         return self.parse_output(stdout)
     
     def terminate(self):        
+        if self.is_finished():
+            return
+        try:
+            os.kill(-self.pid, SIGTERM)
+        except OSError, e:
+            if e.errno != errno.ESRCH:
+                # If it's not because the process no longer exists,
+                # something weird is wrong.
+                raise
+        sleep(0.01)
+        if not self.is_finished(): # Still hasn't exited.
+            try:
+                os.kill(-self.proc.pid, SIGKILL)
+            except OSError, e:
+                if e.errno != errno.ESRCH:
+                    raise      
+        """  
         queue = deque([self.pid])
         while not len(queue) == 0:
             p = queue.popleft()
             command = 'ps -o pid,ppid'
+            #print command
             args = shlex.split(command)
-            process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+            process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,preexec_fn=os.setsid)
             output = process.communicate()[0]
+            print p,output
             #print output
             for line in output.split('\n')[1:]:
                 line = line.split()
@@ -127,13 +145,14 @@ class RunATP(object):
                     continue
                 if int(line[1]) == p:
                     queue.append(int(line[0]))
-                try: 
-                    kill(p,SIGTERM)
-                    # TODO: UNIX ONLY
-                    while exists("/proc/%" % p):
-                        kill(p,SIGKILL)
-                except OSError:
-                    pass
+            try: 
+                kill(p,SIGTERM)
+                kill(p,SIGKILL)
+                queue.append(p)
+                print p
+            except OSError:
+                pass
+        """
   
 if __name__ == '__main__':  
     filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SYO/SYO534^1.p'  
@@ -141,7 +160,7 @@ if __name__ == '__main__':
                  '--atptimeout 64 --notReplAndrewsEQ --relevancefilter 1 --atp e=/home/daniel/TPTP/E1.7/PROVER/eprover --noslices',
                  #'--atp e=/home/daniel/TPTP/E1.7/PROVER/eprover',
                  '-t 100',
-                 10,filename,pause=False)
+                 5,filename,pause=False)
     print 'start'
     print atp.run()
     print atp.is_finished()
