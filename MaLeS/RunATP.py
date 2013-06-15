@@ -11,11 +11,60 @@ from os.path import realpath,dirname
 from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL,SIGTERM
 from time import sleep,time
 
-class Alarm(Exception):
-    pass
-def alarm_handler(signum, frame):
-    #print 'Alarm Raised'
-    raise Alarm
+
+import subprocess, signal, os, threading, errno
+from contextlib import contextmanager
+
+class TimeoutThread(object):
+    def __init__(self, seconds):
+        self.seconds = seconds
+        self.cond = threading.Condition()
+        self.cancelled = False
+        self.thread = threading.Thread(target=self._wait)
+
+    def run(self):
+        """Begin the timeout."""
+        self.thread.start()
+
+    def _wait(self):
+        with self.cond:
+            self.cond.wait(self.seconds)
+
+            if not self.cancelled:
+                self.timed_out()
+
+    def cancel(self):
+        """Cancel the timeout, if it hasn't yet occured."""
+        with self.cond:
+            self.cancelled = True
+            self.cond.notify()
+        self.thread.join()
+
+    def timed_out(self):
+        """The timeout has expired."""
+        raise NotImplementedError
+
+class KillProcessThread(TimeoutThread):
+    def __init__(self, seconds, pid):
+        super(KillProcessThread, self).__init__(seconds)
+        self.pid = pid
+
+    def timed_out(self):
+        try:
+            os.kill(self.pid, signal.SIGKILL)
+        except OSError as e:
+            # If the process is already gone, ignore the error.
+            if e.errno not in (errno.EPERM, errno. ESRCH):
+                raise e
+
+@contextmanager
+def processTimeout(seconds, pid):
+    timeout = KillProcessThread(seconds, pid)
+    timeout.run()
+    try:
+        yield
+    finally:
+        timeout.cancel()
 
 class RunATP(object):
     def __init__(self,binary,strategy,timeString,time,filename,pause=False,maxTime=300):
@@ -38,22 +87,18 @@ class RunATP(object):
         Run a command with a timeout after which it will be forcibly
         killed.
         '''
-        signal(SIGALRM, alarm_handler)
         command = '%s %s %s %s' % (self.binary,self.strategy,self.timeString,self.filename) 
         #print command
         args = shlex.split(command)
         startTime = time()
         self.process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,preexec_fn=os.setsid)
         self.pid = self.process.pid
-        setitimer(ITIMER_REAL,self.runTime)
-        try:
-            stdout, _stderr = self.process.communicate()
-            setitimer(ITIMER_REAL,0)
-        except Alarm:
-            if self.pause:
-                self.start_pause()
-            else:                
-                self.terminate()            
+        stdout = 'init'
+        with processTimeout(self.runTime, self.pid):
+            stdout, _stderr = self.process.communicate()        
+        print stdout
+        resultcode = self.process.wait()
+        if resultcode < 0:
             return False,False,None,self.runTime
         endTime = time()
         usedTime = endTime-startTime
@@ -86,14 +131,17 @@ class RunATP(object):
             return False
         return True        
     
+    """    
     def get_output(self):
         output = self.process.communicate()[0]        
         return self.parse_output(output)
+    """
     
     def start_pause(self):
         if not self.is_finished():
             kill(self.pid, SIGSTOP)
  
+    """
     def cont(self,runTime):
         if self.is_finished():
             return False,False,None,runTime
@@ -110,6 +158,7 @@ class RunATP(object):
                 self.terminate()
             return False,False,None,runTime
         return self.parse_output(stdout)
+    """
     
     def terminate(self):        
         if self.is_finished():
@@ -128,31 +177,7 @@ class RunATP(object):
             except OSError, e:
                 if e.errno != errno.ESRCH:
                     raise      
-        """  
-        queue = deque([self.pid])
-        while not len(queue) == 0:
-            p = queue.popleft()
-            command = 'ps -o pid,ppid'
-            #print command
-            args = shlex.split(command)
-            process = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,preexec_fn=os.setsid)
-            output = process.communicate()[0]
-            print p,output
-            #print output
-            for line in output.split('\n')[1:]:
-                line = line.split()
-                if not len(line) == 2:
-                    continue
-                if int(line[1]) == p:
-                    queue.append(int(line[0]))
-            try: 
-                kill(p,SIGTERM)
-                kill(p,SIGKILL)
-                queue.append(p)
-                print p
-            except OSError:
-                pass
-        """
+
   
 if __name__ == '__main__':  
     filename = '/home/daniel/TPTP/TPTP-v5.4.0/Problems/SYO/SYO534^1.p'  
@@ -181,7 +206,6 @@ if __name__ == '__main__':
             atp.cont()
         i += 1
         if atp.is_finished():
-            print atp.get_output()
             break
     print atp.is_finished()
     print 'Final Sleep'
