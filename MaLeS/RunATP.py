@@ -4,15 +4,11 @@ Created on Aug 16, 2012
 @author: daniel
 '''
 
-import shlex,subprocess,os,errno
-from collections import deque
-from os import kill,getpgid
-from os.path import realpath,dirname
+import shlex,threading,subprocess,os,errno
+from os import kill
+#from os.path import realpath,dirname
 from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL,SIGTERM
 from time import sleep,time
-
-
-import subprocess, signal, os, threading, errno
 from contextlib import contextmanager
 
 class TimeoutThread(object):
@@ -96,7 +92,6 @@ class RunATP(object):
         stdout = 'init'
         with processTimeout(self.runTime, self.pid):
             stdout, _stderr = self.process.communicate()        
-        print stdout
         resultcode = self.process.wait()
         if resultcode < 0:
             return False,False,None,self.runTime
