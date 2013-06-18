@@ -12,7 +12,7 @@ from CrossValidation import cross_validate
 def create_leo_string(parameters):
     parameterList = []
     for param,val in sorted(parameters.items()):
-        if val == False:
+        if val == False or val == 'False':
             continue
         elif param.startswith('--') and (val == True or val == 'True'):
             parameterList.append(param)
@@ -26,7 +26,7 @@ def create_leo_string(parameters):
 def create_E_string(parameters):
     parameterList = []
     for param,val in sorted(parameters.items()):
-        if val == False:
+        if val == False or val == 'False':
             continue
         elif param.startswith('--') and (val == True or val == 'True'):
             parameterList.append(param)
