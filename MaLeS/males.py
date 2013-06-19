@@ -194,7 +194,9 @@ def main(argv = sys.argv[1:]):
                     break             
         # If we tried all options, run auto for the rest of the time
         if not foundNewBestStrat:
-            raise NotImplementedError
+            logger.info('Tried all predictions. Running global best for remaining time.')
+            bestStrat = startStrategies[0]
+            runTime = args.time-(time()-beginTime)
         
         # Determine runtime:        
         runTimes[bestStrat.name] += runTime
