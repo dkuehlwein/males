@@ -217,14 +217,14 @@ class Strategy(object):
         return deleteStrat
     
     def predict(self,testKM):
+        minVal = 300
+        secondMin = 300
+        for v in self.solvedProblems.itervalues():
+            if v < minVal:
+                secondMin = minVal
+                minVal = v
         # If there is not enough data, return the maximal time.
         if self.labels.shape[0] < self.minDataPoints:
-            minVal = 300
-            secondMin = 300
-            for v in self.solvedProblems.itervalues():
-                if v < minVal:
-                    secondMin = minVal
-                    minVal = v
             if secondMin == 300:
                 return round(minVal+0.05,2)
             else:
@@ -232,7 +232,7 @@ class Strategy(object):
             # TODO: What's best?            
             #return max(self.solvedProblems.itervalues())        
         localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
-        returnVal = float(localTestKM*self.weights)
+        returnVal = max(float(localTestKM*self.weights),secondMin)
         return returnVal               
         
         
