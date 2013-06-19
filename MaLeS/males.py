@@ -194,7 +194,7 @@ def main(argv = sys.argv[1:]):
                     break             
         # If we tried all options, run auto for the rest of the time
         if not foundNewBestStrat:
-            pass
+            raise NotImplementedError
         
         # Determine runtime:        
         runTimes[bestStrat.name] += runTime
