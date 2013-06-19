@@ -5,7 +5,7 @@ Created on Aug 16, 2012
 '''
 
 import shlex,threading,subprocess,os,errno
-from os import kill
+from os import kill,killpg
 #from os.path import realpath,dirname
 from signal import signal,setitimer,ITIMER_REAL,SIGALRM,SIGSTOP,SIGCONT,SIGKILL,SIGTERM
 from time import sleep,time
@@ -47,7 +47,7 @@ class KillProcessThread(TimeoutThread):
 
     def timed_out(self):
         try:
-            os.kill(self.pid, SIGKILL)
+            os.killpg(self.pid, SIGKILL)
         except OSError as e:
             # If the process is already gone, ignore the error.
             if e.errno not in (errno.EPERM, errno. ESRCH):
