@@ -47,7 +47,7 @@ class KillProcessThread(TimeoutThread):
 
     def timed_out(self):
         try:
-            os.kill(self.pid, signal.SIGKILL)
+            os.kill(self.pid, SIGKILL)
         except OSError as e:
             # If the process is already gone, ignore the error.
             if e.errno not in (errno.EPERM, errno. ESRCH):
