@@ -51,7 +51,8 @@ def greedy_startStrategies(strategies,runTime=1.0,number=10):
                 maxSolved = len(tmp)
                 bestStrat = s
             solvedInRunTime[s] = tmp
-        startStrats.append(bestStrat)        
+        if not bestStrat in startStrats:
+            startStrats.append(bestStrat)        
         solved = solved.union(solvedInRunTime[bestStrat])
     logger.info("Solved by chosen strategies / Max solvable in runTime / Max solvable : %s / %s / %s" % \
                 (len(solved),len(set(maxPossibleSolvedInRunTime)),len(set(maxPossibleSolved))))
