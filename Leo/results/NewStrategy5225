@@ -1,0 +1,6 @@
+[NewStrategy5225]
+--atptimeout = 64
+--relevancefilter = 1
+--order = none
+--unfolddefsearly = False
+

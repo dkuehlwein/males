@@ -1,0 +1,6 @@
+[NewStrategy2097]
+--atptimeout = 64
+--notUseExtCnfCmbd = False
+--translation = kerber
+--primsubst = 3
+

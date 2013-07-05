@@ -1,0 +1,5 @@
+[NewStrategy651]
+--unidepth = 2
+--expand_exuni = False
+--notReplLeibnizEQ = True
+

@@ -1,0 +1,6 @@
+[NewStrategy3958]
+--notReplLeibnizEQ = True
+--primsubst = 2
+--notUseExtCnfCmbd = False
+--unidepth = 3
+

@@ -1,0 +1,5 @@
+[NewStrategy1057]
+--unfolddefsearly = False
+--notUseChoice = True
+--translation = fof_experiment_erased
+

@@ -1,0 +1,6 @@
+[NewStrategy9285]
+--primsubst = 0
+--order = naive
+--unfolddefslate = True
+--notUseChoice = True
+

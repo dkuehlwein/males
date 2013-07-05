@@ -1,0 +1,8 @@
+[NewStrategy62038]
+--expand_exuni = False
+--notUseExtCnfCmbd = True
+--translation = kerber
+--primsubst = 3
+--unfolddefslate = True
+--notExtuni = False
+

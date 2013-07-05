@@ -1,0 +1,4 @@
+[NewStrategy901]
+--unfolddefsearly = False
+--unfolddefslate = True
+

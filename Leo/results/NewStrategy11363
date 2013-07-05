@@ -1,0 +1,8 @@
+[NewStrategy11363]
+--notUseExtCnfCmbd = True
+--unidepth = 2
+--translation = fully-typed
+--unfolddefsearly = False
+--relevancefilter = 5
+--notReplAndrewsEQ = True
+

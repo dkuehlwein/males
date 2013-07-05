@@ -1,0 +1,7 @@
+[NewStrategy60126]
+--notReplLeibnizEQ = True
+--notReplAndrewsEQ = True
+--expand_exuni = False
+--unfolddefslate = True
+--translation = kerber
+

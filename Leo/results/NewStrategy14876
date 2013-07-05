@@ -1,0 +1,7 @@
+[NewStrategy14876]
+--notReplLeibnizEQ = True
+--relevancefilter = 2
+--notUseChoice = True
+--notUseExtCnfCmbd = True
+--notReplAndrewsEQ = True
+

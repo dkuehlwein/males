@@ -1,0 +1,8 @@
+[NewStrategy17509]
+--unidepth = 10
+--translation = kerber
+--notUseExtCnfCmbd = True
+--notReplLeibnizEQ = False
+--unfolddefslate = True
+--notReplAndrewsEQ = False
+

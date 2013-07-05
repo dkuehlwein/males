@@ -1,0 +1,7 @@
+[NewStrategy10244]
+--unfolddefsearly = False
+--relevancefilter = 5
+--translation = fof_experiment_erased
+--notUseExtCnfCmbd = False
+--unfolddefslate = False
+

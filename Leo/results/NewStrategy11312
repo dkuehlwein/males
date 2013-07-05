@@ -1,0 +1,8 @@
+[NewStrategy11312]
+--notUseExtCnfCmbd = True
+--translation = fof_experiment_erased
+--unfolddefsearly = False
+--notUseChoice = False
+--relevancefilter = 5
+--notReplAndrewsEQ = True
+

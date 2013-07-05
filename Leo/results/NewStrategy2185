@@ -1,0 +1,6 @@
+[NewStrategy2185]
+--notReplLeibnizEQ = True
+--unfolddefsearly = True
+--primsubst = 0
+--notExtuni = False
+

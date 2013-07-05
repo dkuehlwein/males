@@ -1,0 +1,5 @@
+[NewStrategy8704]
+--notReplLeibnizEQ = False
+--notUseChoice = False
+--unfolddefslate = True
+

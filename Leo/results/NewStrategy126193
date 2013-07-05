@@ -1,0 +1,8 @@
+[NewStrategy126193]
+--unidepth = 12
+--order = naive
+--translation = kerber
+--notReplLeibnizEQ = False
+--relevancefilter = 4
+--unfolddefslate = True
+

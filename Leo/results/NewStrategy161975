@@ -1,0 +1,10 @@
+[NewStrategy161975]
+--notUseExtCnfCmbd = True
+--unidepth = 13
+--order = naive
+--unfolddefsearly = False
+--primsubst = 1
+--relevancefilter = 2
+--unfolddefslate = False
+--translation = fof_experiment_erased
+

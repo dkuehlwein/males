@@ -1,0 +1,5 @@
+[NewStrategy1311]
+--unfolddefslate = True
+--notUseExtCnfCmbd = True
+--order = naive
+

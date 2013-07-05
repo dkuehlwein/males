@@ -1,0 +1,8 @@
+[NewStrategy14241]
+--unidepth = 11
+--translation = fof_experiment_erased
+--expand_exuni = False
+--notUseChoice = True
+--primsubst = 1
+--relevancefilter = 6
+

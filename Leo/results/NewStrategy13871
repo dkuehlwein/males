@@ -1,0 +1,8 @@
+[NewStrategy13871]
+--translation = fof_experiment_erased
+--atptimeout = 32
+--notUseChoice = True
+--primsubst = 1
+--relevancefilter = 2
+--notReplAndrewsEQ = True
+

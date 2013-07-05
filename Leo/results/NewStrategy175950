@@ -1,0 +1,12 @@
+[NewStrategy175950]
+--unidepth = 6
+--translation = kerber
+--notUseExtCnfCmbd = True
+--unfolddefsearly = False
+--atptimeout = 16
+--notUseChoice = False
+--notReplLeibnizEQ = True
+--relevancefilter = 1
+--unfolddefslate = True
+--notReplAndrewsEQ = False
+

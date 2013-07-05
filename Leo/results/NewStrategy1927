@@ -1,0 +1,5 @@
+[NewStrategy1927]
+--notReplAndrewsEQ = False
+--notUseExtCnfCmbd = True
+--translation = kerber
+

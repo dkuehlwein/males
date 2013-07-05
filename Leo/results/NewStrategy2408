@@ -1,0 +1,5 @@
+[NewStrategy2408]
+--notReplLeibnizEQ = True
+--notReplAndrewsEQ = True
+--notUseChoice = False
+

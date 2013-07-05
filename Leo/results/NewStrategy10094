@@ -1,0 +1,6 @@
+[NewStrategy10094]
+--translation = fully-typed
+--order = none
+--primsubst = 4
+--unfolddefslate = True
+

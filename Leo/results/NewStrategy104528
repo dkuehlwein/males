@@ -1,0 +1,10 @@
+[NewStrategy104528]
+--notUseExtCnfCmbd = True
+--expand_exuni = False
+--notUseChoice = True
+--primsubst = 1
+--notReplLeibnizEQ = True
+--relevancefilter = 2
+--unfolddefslate = False
+--notReplAndrewsEQ = True
+

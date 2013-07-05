@@ -1,0 +1,6 @@
+[NewStrategy20628]
+--unidepth = 1
+--primsubst = 2
+--unfolddefslate = True
+--notReplLeibnizEQ = True
+

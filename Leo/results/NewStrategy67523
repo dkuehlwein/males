@@ -1,0 +1,8 @@
+[NewStrategy67523]
+--unidepth = 1
+--notUseExtCnfCmbd = False
+--notUseChoice = True
+--primsubst = 2
+--unfolddefslate = True
+--notReplAndrewsEQ = True
+

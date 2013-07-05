@@ -1,0 +1,6 @@
+[NewStrategy8111]
+--atptimeout = 64
+--unidepth = 9
+--unfolddefslate = True
+--primsubst = 2
+

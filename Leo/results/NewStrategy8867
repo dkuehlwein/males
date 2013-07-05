@@ -1,0 +1,7 @@
+[NewStrategy8867]
+--unidepth = 2
+--relevancefilter = 1
+--unfolddefslate = True
+--notUseExtCnfCmbd = True
+--order = none
+

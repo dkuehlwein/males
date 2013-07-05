@@ -1,0 +1,7 @@
+[NewStrategy7505]
+--atptimeout = 32
+--notReplLeibnizEQ = True
+--order = none
+--unfolddefsearly = False
+--unfolddefslate = True
+

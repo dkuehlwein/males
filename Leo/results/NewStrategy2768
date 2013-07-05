@@ -1,0 +1,5 @@
+[NewStrategy2768]
+--notReplAndrewsEQ = False
+--unfolddefsearly = True
+--translation = fully-typed
+

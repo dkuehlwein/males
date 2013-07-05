@@ -1,0 +1,5 @@
+[NewStrategy8237]
+--primsubst = 4
+--unfolddefslate = True
+--notUseChoice = True
+

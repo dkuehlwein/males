@@ -1,0 +1,9 @@
+[NewStrategy60313]
+--translation = kerber
+--atptimeout = 32
+--notUseChoice = False
+--notReplLeibnizEQ = True
+--unfolddefslate = True
+--notExtuni = False
+--notReplAndrewsEQ = True
+

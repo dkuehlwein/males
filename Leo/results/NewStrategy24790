@@ -1,0 +1,8 @@
+[NewStrategy24790]
+--unidepth = 3
+--unfolddefsearly = False
+--primsubst = 0
+--unfolddefslate = False
+--notExtuni = False
+--notReplAndrewsEQ = False
+

@@ -1,0 +1,5 @@
+[NewStrategy4233]
+--atptimeout = 32
+--unidepth = 1
+--notUseExtCnfCmbd = True
+

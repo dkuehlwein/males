@@ -1,0 +1,8 @@
+[NewStrategy127716]
+--unidepth = 1
+--translation = fof_experiment_erased
+--unfolddefsearly = True
+--primsubst = 1
+--notReplLeibnizEQ = False
+--unfolddefslate = True
+

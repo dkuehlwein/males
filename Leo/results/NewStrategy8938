@@ -1,0 +1,6 @@
+[NewStrategy8938]
+--unfolddefsearly = False
+--translation = fof_full
+--unfolddefslate = True
+--notExtuni = False
+

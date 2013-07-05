@@ -1,0 +1,6 @@
+[NewStrategy8318]
+--primsubst = 4
+--unfolddefsearly = False
+--notUseExtCnfCmbd = True
+--unfolddefslate = True
+

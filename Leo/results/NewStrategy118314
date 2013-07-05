@@ -1,0 +1,8 @@
+[NewStrategy118314]
+--notUseExtCnfCmbd = False
+--order = none
+--translation = fof_experiment_erased
+--atptimeout = 32
+--primsubst = 1
+--unfolddefslate = True
+

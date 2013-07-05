@@ -1,0 +1,6 @@
+[NewStrategy140]
+--translation = kerber
+--order = naive
+--expand_exuni = False
+--unfolddefslate = False
+

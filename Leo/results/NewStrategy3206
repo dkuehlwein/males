@@ -1,0 +1,6 @@
+[NewStrategy3206]
+--atptimeout = 32
+--unidepth = 5
+--notReplAndrewsEQ = False
+--notExtuni = False
+

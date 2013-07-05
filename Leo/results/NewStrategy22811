@@ -1,0 +1,8 @@
+[NewStrategy22811]
+--unidepth = 13
+--expand_exuni = False
+--primsubst = 1
+--notReplLeibnizEQ = False
+--relevancefilter = 5
+--notExtuni = False
+

@@ -1,0 +1,5 @@
+[NewStrategy871]
+--unidepth = 10
+--primsubst = 2
+--notReplLeibnizEQ = True
+

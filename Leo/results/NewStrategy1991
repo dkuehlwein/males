@@ -1,0 +1,5 @@
+[NewStrategy1991]
+--atptimeout = 32
+--notUseChoice = False
+--unfolddefslate = True
+

@@ -1,0 +1,6 @@
+[NewStrategy4983]
+--notReplAndrewsEQ = True
+--unfolddefslate = False
+--primsubst = 2
+--order = naive
+

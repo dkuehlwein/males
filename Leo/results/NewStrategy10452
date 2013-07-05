@@ -1,0 +1,8 @@
+[NewStrategy10452]
+--notUseExtCnfCmbd = True
+--order = naive
+--unfolddefsearly = False
+--relevancefilter = 0
+--unfolddefslate = False
+--translation = fof_experiment_erased
+

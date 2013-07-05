@@ -1,0 +1,6 @@
+[NewStrategy2314]
+--unidepth = 3
+--notReplAndrewsEQ = False
+--notUseExtCnfCmbd = True
+--unfolddefslate = False
+

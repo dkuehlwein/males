@@ -1,0 +1,5 @@
+[NewStrategy742]
+--unfolddefsearly = True
+--translation = fof_experiment_erased
+--unfolddefslate = True
+

@@ -1,0 +1,7 @@
+[NewStrategy97345]
+--unidepth = 0
+--primsubst = 0
+--unfolddefslate = True
+--notUseExtCnfCmbd = True
+--notReplLeibnizEQ = True
+

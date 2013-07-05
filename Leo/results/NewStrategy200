@@ -1,0 +1,4 @@
+[NewStrategy200]
+--notUseChoice = True
+--notUseExtCnfCmbd = False
+

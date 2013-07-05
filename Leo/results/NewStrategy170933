@@ -1,0 +1,12 @@
+[NewStrategy170933]
+--notUseExtCnfCmbd = False
+--unidepth = 0
+--expand_exuni = False
+--unfolddefsearly = False
+--notReplAndrewsEQ = False
+--notReplLeibnizEQ = True
+--unfolddefslate = True
+--notExtuni = False
+--translation = fof_experiment_erased
+--order = none
+

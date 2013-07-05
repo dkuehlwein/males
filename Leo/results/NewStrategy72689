@@ -1,0 +1,7 @@
+[NewStrategy72689]
+--atptimeout = 32
+--unidepth = 1
+--unfolddefslate = True
+--translation = kerber
+--notReplLeibnizEQ = False
+

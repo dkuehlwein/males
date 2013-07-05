@@ -1,0 +1,6 @@
+[NewStrategy1380]
+--unidepth = 8
+--primsubst = 4
+--translation = kerber
+--notReplLeibnizEQ = False
+

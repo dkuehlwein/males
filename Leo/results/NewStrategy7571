@@ -1,0 +1,8 @@
+[NewStrategy7571]
+--order = none
+--unfolddefsearly = False
+--atptimeout = 32
+--notUseChoice = False
+--notExtuni = False
+--translation = fof_experiment_erased
+

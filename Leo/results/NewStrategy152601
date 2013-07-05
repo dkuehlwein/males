@@ -1,0 +1,10 @@
+[NewStrategy152601]
+--order = none
+--unfolddefsearly = False
+--notUseChoice = True
+--primsubst = 1
+--notReplLeibnizEQ = False
+--relevancefilter = 1
+--unfolddefslate = False
+--translation = fof_full
+

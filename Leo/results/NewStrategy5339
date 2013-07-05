@@ -1,0 +1,5 @@
+[NewStrategy5339]
+--atptimeout = 64
+--unidepth = 4
+--notReplLeibnizEQ = True
+

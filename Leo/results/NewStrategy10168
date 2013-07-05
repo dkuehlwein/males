@@ -1,0 +1,6 @@
+[NewStrategy10168]
+--unfolddefsearly = False
+--relevancefilter = 0
+--unfolddefslate = True
+--translation = fof_experiment_erased
+

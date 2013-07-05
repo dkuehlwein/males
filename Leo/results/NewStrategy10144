@@ -1,0 +1,7 @@
+[NewStrategy10144]
+--notUseExtCnfCmbd = True
+--unidepth = 4
+--translation = fof_experiment_erased
+--expand_exuni = False
+--unfolddefslate = True
+

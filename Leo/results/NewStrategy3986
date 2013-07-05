@@ -1,0 +1,5 @@
+[NewStrategy3986]
+--unidepth = 14
+--order = naive
+--translation = fully-typed
+

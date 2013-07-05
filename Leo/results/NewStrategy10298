@@ -1,0 +1,7 @@
+[NewStrategy10298]
+--atptimeout = 64
+--translation = fof_experiment_erased
+--relevancefilter = 0
+--unfolddefslate = False
+--unfolddefsearly = False
+

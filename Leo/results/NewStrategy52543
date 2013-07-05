@@ -1,0 +1,8 @@
+[NewStrategy52543]
+--expand_exuni = False
+--translation = fof_experiment
+--notUseExtCnfCmbd = False
+--primsubst = 1
+--unfolddefsearly = False
+--relevancefilter = 2
+

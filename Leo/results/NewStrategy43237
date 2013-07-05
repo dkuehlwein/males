@@ -1,0 +1,9 @@
+[NewStrategy43237]
+--unidepth = 1
+--expand_exuni = False
+--order = none
+--unfolddefsearly = False
+--unfolddefslate = True
+--notExtuni = False
+--translation = fof_experiment_erased
+

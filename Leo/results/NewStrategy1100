@@ -1,0 +1,4 @@
+[NewStrategy1100]
+--notReplLeibnizEQ = False
+--unfolddefsearly = False
+

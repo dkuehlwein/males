@@ -1,0 +1,11 @@
+[NewStrategy170687]
+--unidepth = 2
+--expand_exuni = False
+--unfolddefsearly = False
+--atptimeout = 64
+--primsubst = 0
+--notReplLeibnizEQ = True
+--relevancefilter = 0
+--unfolddefslate = True
+--notExtuni = False
+

@@ -1,0 +1,4 @@
+[NewStrategy1110]
+--translation = fully-typed
+--unfolddefsearly = True
+
