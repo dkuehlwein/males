@@ -232,7 +232,12 @@ class Strategy(object):
             # TODO: What's best?            
             #return max(self.solvedProblems.itervalues())        
         localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
-        returnVal = max(float(localTestKM*self.weights),secondMin)
+        if (secondMin == 300) and (minVal == 300):
+            returnVal = float(localTestKM*self.weights)
+        elif secondMin == 300:
+            returnVal = max(float(localTestKM*self.weights),minVal)
+        else:
+            returnVal = max(float(localTestKM*self.weights),secondMin)
         return returnVal               
         
         
