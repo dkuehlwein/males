@@ -1,7 +1,7 @@
 
 ----------------------  MaLeS 1.2 ------------------------
 
-Requirements: Python 2.7.x, Numpy (> 1.6), Scipy (0.10) (http://www.scipy.org/Installing_SciPy)
+Requirements: Python 2.7.x, Numpy (>= 1.6), Scipy (>= 0.10) (http://www.scipy.org/Installing_SciPy)
 
 -- Installation of Satallax-MaLeS
 
@@ -17,7 +17,7 @@ Requirements: Python 2.7.x, Numpy (> 1.6), Scipy (0.10) (http://www.scipy.org/In
 -- Installation of E-MaLeS
 
 1. Install E1.7 from E/E.tgz
-2. Run EConfig with the PROVER folder of the E installtion as the location argument.
+2. Run EConfig with the PROVER folder of the E installation as the location argument.
    ./EConfig.py --location=/home/daniel/E1.7/PROVER
 3. Learn the models
    MaLeS/learn.py --Setup=setup.ini
