@@ -53,8 +53,8 @@ config.set('Search','Walks',str(max(50,cpu_count()-1)))
 config.set('Search','WalkLength','10')
 
 config.add_section('Learn')
-config.set('Learn','Time','10')
-config.set('Learn','MaxTime','300')
+#config.set('Learn','Time','10')
+#config.set('Learn','MaxTime','300')
 config.set('Learn','Features','E') # or TPTP
 config.set('Learn','FeaturesFile',os.path.join(path,'tmp','features.pickle'))
 config.set('Learn','StrategiesFile',os.path.join(path,'tmp','strategies.pickle'))
