@@ -100,6 +100,7 @@ if __name__ == '__main__':
         logger.info("Deleting dominated strategies.")
         # Get best times
         bestTimes = {}
+        pp = '/scratch/kuehlwein/TPTP-v5.4.0/Problems/AGT/AGT031^1.p'
         for s in tmpStrategies:
             for p,t in s.solvedProblems.iteritems():
                 if bestTimes.has_key(p):
@@ -110,14 +111,21 @@ if __name__ == '__main__':
         bestStrats = {}
         for s in tmpStrategies:
             for p,t in s.solvedProblems.iteritems():
-                if bestStrats.has_key(p):
-                    bestTime = bestTimes[p]
-                    solvedByBest = len(bestStrats[p].solvedProblems)
-                    if t < bestTime + config.getfloat('Learn', 'Tolerance')  and solvedByBest < len(s.solvedProblems):
-                        bestStrats[p] = s
-                else:
-                    bestStrats[p] = s
-        tmp2Strategies = set(bestStrats.values())
+                bestTime = bestTimes[p]                                    
+                if bestStrats.has_key(p):                    
+                    solvedByBest = len(bestStrats[p][0].solvedProblems)
+                    if t < bestTime + config.getfloat('Learn', 'Tolerance'):
+                        if solvedByBest < len(s.solvedProblems):
+                            bestStrats[p] = [s]
+                        elif solvedByBest == len(s.solvedProblems):
+                            bestStrats[p].append(s)
+                elif t < bestTime + config.getfloat('Learn', 'Tolerance'):                
+                    bestStrats[p] = [s]
+        tmp2Strategies = []
+        for sList in bestStrats.values():
+            for s in sList:
+                tmp2Strategies.append(s)
+        tmp2Strategies = set(tmp2Strategies)
         logger.info('Deleted %s strategies. %s strategies left.' % (len(tmpStrategies)-len(tmp2Strategies),len(tmp2Strategies)))        
        
         # Get start strategies
