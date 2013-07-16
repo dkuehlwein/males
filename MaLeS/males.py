@@ -102,8 +102,6 @@ def main(argv = sys.argv[1:]):
     
     # Load data
     startStrategies,startStratsTime,strategies,notSolvedYet,kernelGrid = load_data(config.get('Run', 'StrategiesFile'))
-    featureDict,minVals,maxVals = load_data(config.get('Run', 'FeaturesFile'))    
-
     startStratsTime *= config.getfloat('Run', 'CPUSpeedRatio') # Account for difference in training machine speed and local machine speed
 
     # Run startStrategies  
@@ -151,6 +149,7 @@ def main(argv = sys.argv[1:]):
     #"""
 
     # Get the features of the problem and normalize them
+    featureDict,minVals,maxVals = load_data(config.get('Run', 'FeaturesFile'))
     featureDict[args.problem] = get_normalized_features(args.problem,config.get('Learn', 'Features'),minVals,maxVals)
     
     # Create KMs
