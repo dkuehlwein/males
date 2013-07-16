@@ -225,12 +225,12 @@ class Strategy(object):
                 minVal = v
         # If there is not enough data, return the maximal time.
         if self.labels.shape[0] < self.minDataPoints:
-            if secondMin == 300:
-                return round(minVal+0.05,2)
-            else:
-                return round(secondMin+0.05,2)
+            #if secondMin == 300:
+            #    return round(minVal+0.05,2)
+            #else:
+            #    return round(secondMin+0.05,2)
             # TODO: What's best?            
-            #return max(self.solvedProblems.itervalues())        
+            return max(self.solvedProblems.itervalues())        
         localTestKM = testKM[numpy.ix_([0],self.trainIndices)]
         if (secondMin == 300) and (minVal == 300):
             returnVal = float(localTestKM*self.weights)
