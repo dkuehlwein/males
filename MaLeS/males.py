@@ -124,7 +124,7 @@ def main(argv = sys.argv[1:]):
             for p in processDict.itervalues():
                 p.terminate()
             logger.info("Time used: %s seconds" % (time()-beginTime))
-            return 0
+            return args.problem,proofFound,time()-beginTime
         elif sP.is_finished():
             runTimes[strategy.name] = 9999
             if config.getboolean('Run', 'PauseProver'):
@@ -218,7 +218,7 @@ def main(argv = sys.argv[1:]):
             for p in processDict.itervalues():
                 p.terminate()
             logger.info("Time used: %s seconds" % (time()-beginTime))
-            return 0
+            return args.problem,proofFound,time()-beginTime
         elif sP.is_finished():            
             runTimes[bestStrat.name] = 9999
             if config.getboolean('Run', 'PauseProver'):
@@ -265,7 +265,7 @@ def main(argv = sys.argv[1:]):
     logger.info("Time used: %s seconds" % (time()-beginTime))
     if not config.get('Run', 'OutputFile') == 'None':
         outStream.close()        
-    return 1   
+    return args.problem,proofFound,time()-beginTime   
             
 if __name__ == '__main__':
     sys.exit(main())
