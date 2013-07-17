@@ -89,9 +89,9 @@ if __name__ == '__main__':
 
     # Create initial models
     logger.info('Creating Models.')
-    if os.path.isfile(config.get('Learn', 'StrategiesFile') ) and os.path.isfile(config.get('Learn', 'ModelsFile') ) and not config.getboolean('Settings', 'Clear') :
+    if os.path.isfile(config.get('Learn', 'StrategiesFile') ) and os.path.isfile(config.get('Learn', 'KernelFile') ) and not config.getboolean('Settings', 'Clear') :
         startStrategies,startTime,strategies,notSolvedYet,kernelGrid = load_data(config.get('Learn', 'StrategiesFile') )        
-        KMs = load_data(config.get('Learn', 'ModelsFile') )       
+        KMs = load_data(config.get('Learn', 'KernelFile') )       
     else:
         # Load Strategies
         logger.info("Parsing Strategy Files.")
@@ -100,7 +100,6 @@ if __name__ == '__main__':
         logger.info("Deleting dominated strategies.")
         # Get best times
         bestTimes = {}
-        pp = '/scratch/kuehlwein/TPTP-v5.4.0/Problems/AGT/AGT031^1.p'
         for s in tmpStrategies:
             for p,t in s.solvedProblems.iteritems():
                 if bestTimes.has_key(p):
@@ -181,7 +180,7 @@ if __name__ == '__main__':
                                                                       kernelGrid))       
         pool.close()
         pool.join()  
-        dump_data(KMs,config.get('Learn', 'ModelsFile') )
+        dump_data(KMs,config.get('Learn', 'KernelFile') )
         logger.info('Done')
         
         logger.info('Learning strategy models.')        
@@ -194,7 +193,8 @@ if __name__ == '__main__':
                                                          itertools.repeat(config.getint('Learn', 'CrossValidationFolds'))))
         pool.close()
         pool.join()  
-        dump_data((startStrategies,config.getfloat('Learn', 'StartStrategiesTime'),strategies,notSolvedYet,kernelGrid),config.get('Learn', 'StrategiesFile') )
+        dump_data((strategies,notSolvedYet,kernelGrid),config.get('Learn', 'StrategiesFile') )
+        dump_data((startStrategies,config.getfloat('Learn', 'StartStrategiesTime')),'startStrats'+config.get('Learn', 'StrategiesFile') )
     logger.info('All Done.')    
                      
                      
