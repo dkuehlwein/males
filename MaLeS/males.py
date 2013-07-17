@@ -102,7 +102,7 @@ def main(argv = sys.argv[1:]):
     
     # Load data
     
-    startStrategies,startStratsTime = load_data('startStrats'+config.get('Run', 'StrategiesFile'))    
+    startStrategies,startStratsTime = load_data(config.get('Run', 'StrategiesFile')+'startStrats')    
     startStratsTime *= config.getfloat('Run', 'CPUSpeedRatio') # Account for difference in training machine speed and local machine speed
 
     # Run startStrategies  

@@ -194,7 +194,7 @@ if __name__ == '__main__':
         pool.close()
         pool.join()  
         dump_data((strategies,notSolvedYet,kernelGrid),config.get('Learn', 'StrategiesFile') )
-        dump_data((startStrategies,config.getfloat('Learn', 'StartStrategiesTime')),'startStrats'+config.get('Learn', 'StrategiesFile') )
+        dump_data((startStrategies,config.getfloat('Learn', 'StartStrategiesTime')),config.get('Learn', 'StrategiesFile')+'startStrats' )
     logger.info('All Done.')    
                      
                      
