@@ -66,7 +66,7 @@ config.set('Learn','CrossValidationFolds','10')
 config.set('Learn','StartStrategies','10')
 config.set('Learn','StartStrategiesTime','1.0')
 config.set('Learn','CPU Bias','0.3')
-config.set('Learn','Tolerance','10.0')
+config.set('Learn','Tolerance','15.0')
 
 config.add_section('Run')
 config.set('Run','CPUSpeedRatio','1.0')
