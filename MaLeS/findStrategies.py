@@ -21,11 +21,11 @@ def run_strategy((s,p,time,atpConfig)):
 
 mainPath = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 parser = argparse.ArgumentParser(description='Strategy Finder 1.1 --- May 2013.')
-parser.add_argument('--Setup', default = '../setup.ini',  
+parser.add_argument('--Setup', default = os.path.join(mainPath,'setup.ini'),  
                    help='The ini file with the search parameters.')
-parser.add_argument('--ATP', default = '../E/E.ini',  
+parser.add_argument('--ATP', default = os.path.join(mainPath,'ATP.ini'),  
                    help='The ini file with the ATP parameters.')
-parser.add_argument('--Strategies', default = '../E/strategies.ini',  
+parser.add_argument('--Strategies', default = os.path.join(mainPath,'strategies.ini'),  
                    help='The ini file with the predefined strategies.')
 
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         print 'Cannot find ATP argument at %s' % args.ATP
         sys.exit(-1)
     if not os.path.exists(args.Strategies):
-        print 'Cannot find Strategies argument at %s' % args.Strategies
+        print 'Cannot find Strategies argument at %s.' % args.Strategies
         sys.exit(-1)    
     
     searchConfig = ConfigParser.SafeConfigParser()
