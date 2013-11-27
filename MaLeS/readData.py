@@ -124,6 +124,8 @@ def get_e_features(filename):
 def get_normalized_features(problemFile,featureStyle,minVals,maxVals):
     if featureStyle == 'E':
         featureFunction = get_e_features
+    elif featureStyle == 'LEO':
+        featureFunction = get_leo_features        
     else:
         featureFunction = get_TPTP_features    
     problemFeatures = featureFunction(problemFile)
