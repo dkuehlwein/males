@@ -23,20 +23,59 @@ def dump_data(data,fileName):
     OS.close()
     return
 
-def get_TPTP_features(filename):
-    """ Return the TPTP features of a tptp problem """
+def expand_filename(filename):
     logger = logging.getLogger(__file__)
-    features = []
-    # TPTP Features
+    # Try input name
+    if os.path.isfile(filename):
+        return filename
+    # Try TPTP env
     TPTP = os.getenv('TPTP', '')
     if filename.startswith('/scratch/kuehlwein'):
         filename = filename.split('/')
         filename = '/'.join(filename[-3:])    
     filename = os.path.join(TPTP,filename)
+    if os.path.isfile(filename):
+        return filename
+    # Cannot find file
+    logger.warning('Cannot find problem file %s. Aborting.' % filename)
+    sys.exit(-1)        
+
+
+def get_leo_features(filename):
+    """ Return the TPTP features of a tptp problem """
+    logger = logging.getLogger(__file__)
+    features = []
+    filename = expand_filename(filename)
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    if not os.path.isfile(filename):
-        logger.warning('Cannot find problem file %s. Aborting.' % filename)
-        sys.exit(-1)        
+    #command = "%s/bin/leo -a %s" % (path,filename)
+    command = "/home/daniel/Downloads/leo2/bin/leo -a %s" % filename
+    #print command
+    args = shlex.split(command)
+    p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout    
+    lines = p.readlines()
+    p.close()       
+    foundF = False
+    for line in lines:
+        if line.startswith('#'):
+            foundF = not foundF
+            continue
+        if not foundF:
+            continue
+        line = line.split('%')
+        features.append(float(line[0]))
+    #print len(features)    
+    if (len(features)> 0):
+        return features
+    logger.warning('Could not compute features. Try running:')
+    logger.warning(command)
+    sys.exit(-1)
+
+def get_TPTP_features(filename):
+    """ Return the TPTP features of a tptp problem """
+    logger = logging.getLogger(__file__)
+    features = []
+    filename = expand_filename(filename)
+    path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     command = "%s/bin/TPTP_features -i %s" % (path,filename)
     #print command
     args = shlex.split(command)
@@ -59,18 +98,10 @@ def get_TPTP_features(filename):
 
 def get_e_features(filename):
     """ Return the e features of a tptp problem """
-    logger = logging.getLogger("readData")
+    logger = logging.getLogger(__file__)
     features = []
-    # E Features
-    TPTP = os.getenv('TPTP', '')
-    if filename.startswith('/scratch/kuehlwein'):
-        filename = filename.split('/')
-        filename = '/'.join(filename[-3:])
-    filename = os.path.join(TPTP,filename)    
+    filename = expand_filename(filename)
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    if not os.path.isfile(filename):
-        logger.warning('Cannot find problem file%s. Aborting.' % filename)
-        sys.exit(-1)        
     command = "%s/bin/classify_problem -caaaaaaaaaaaaa --tstp-in %s" % (path,filename)
     #print command
     args = shlex.split(command)
@@ -113,8 +144,11 @@ def compute_features(problemsList,featureStyle,cores):
     #problems = [line.strip() for line in IS]
     if featureStyle == 'E':
         featureFunction = get_e_features
+    elif featureStyle == 'LEO':
+        featureFunction = get_leo_features
     else:
         featureFunction = get_TPTP_features
+    get_leo_features(problemsList[0])
     pool = Pool(processes = cores)            
     results = pool.map_async(featureFunction,problemsList)       
     pool.close()
