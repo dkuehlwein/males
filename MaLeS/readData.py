@@ -41,8 +41,13 @@ def expand_filename(filename):
     sys.exit(-1)        
 
 
+def get_tptp_plus_leo_features(filename):
+    tptpFeatures = get_TPTP_features(filename)
+    leoFeatures = get_leo_features(filename)
+    return tptpFeatures+leoFeatures  
+
 def get_leo_features(filename):
-    """ Return the TPTP features of a tptp problem """
+    """ Return the leo features of a tptp problem """
     logger = logging.getLogger(__file__)
     features = []
     filename = expand_filename(filename)
@@ -148,6 +153,8 @@ def compute_features(problemsList,featureStyle,cores):
         featureFunction = get_e_features
     elif featureStyle == 'LEO':
         featureFunction = get_leo_features
+    elif featureStyle == 'TPTP+LEO':
+        featureFunction = get_tptp_plus_leo_features
     else:
         featureFunction = get_TPTP_features
     get_leo_features(problemsList[0])
