@@ -21,22 +21,28 @@ def apply_strat((strategy,notSolvedYet,KMs,regGrid,cv,cvFolds)):
     return strategy
 
 def greedy_startStrategies(strategies,runTime=1.0,number=10):
+    logger = logging.getLogger(__file__)
     startStrats = []
     solvedInRunTime = {}
+    totalTime = {}
     maxSolved = -1
+    maxTotalTime = 99999999
     bestStrat = None
     solved = set([])
     maxPossibleSolved = []
-    maxPossibleSolvedInRunTime = []  
+    maxPossibleSolvedInRunTime = []
     for s in strategies:
+        totalTime[s] = 0.0
         sSolvedInRunTime = []
         for p,t in s.solvedProblems.iteritems():
+            totalTime[s] += t
             if t < runTime:
                 sSolvedInRunTime.append(p)
                 maxPossibleSolvedInRunTime.append(p)
             maxPossibleSolved.append(p)
-        if len(sSolvedInRunTime) > maxSolved:
+        if len(sSolvedInRunTime) > maxSolved or (len(sSolvedInRunTime) == maxSolved and totalTime[s] < maxTotalTime):
             maxSolved = len(sSolvedInRunTime)
+            maxTotalTime = totalTime[s]
             bestStrat = s
         solvedInRunTime[s] = sSolvedInRunTime
         #print len(sSolvedIn1s)
@@ -44,15 +50,17 @@ def greedy_startStrategies(strategies,runTime=1.0,number=10):
     solved = solved.union(solvedInRunTime[bestStrat])
     for _i in range(number-1):
         maxSolved = -1
+        maxTotalTime = 99999999
         bestStrat = None
         for s,sS in solvedInRunTime.iteritems():
             tmp = set(sS).difference(solved)
-            if len(tmp) > maxSolved:
+            if len(tmp) > maxSolved  or (len(tmp) == maxSolved and totalTime[s] < maxTotalTime):
                 maxSolved = len(tmp)
+                maxTotalTime = totalTime[s]
                 bestStrat = s
             solvedInRunTime[s] = tmp
-        if not bestStrat in startStrats:
-            startStrats.append(bestStrat)        
+        #if not bestStrat in startStrats: # Should always hold
+        startStrats.append(bestStrat)        
         solved = solved.union(solvedInRunTime[bestStrat])
     logger.info("Solved by chosen strategies / Max solvable in runTime / Max solvable : %s / %s / %s" % \
                 (len(solved),len(set(maxPossibleSolvedInRunTime)),len(set(maxPossibleSolved))))
@@ -137,12 +145,6 @@ if __name__ == '__main__':
         if len(s.solvedProblems) > 0:
             strategies.append(s)
 
-    """
-    # TODO: Hack
-    for i,p in enumerate(notSolvedYet):
-        p = p.replace('/scratch/kuehlwein','/home/daniel/TPTP')
-        notSolvedYet[i] = p
-    #"""
     # Load Problem Features
     if os.path.exists(config.get('Learn', 'FeaturesFile') ) and not config.getboolean('Settings', 'Clear') :
         logger.info('Loading featureFile')
@@ -151,19 +153,6 @@ if __name__ == '__main__':
         logger.info('Creating feature Dict.')
         featureDict,maxVals,minVals = compute_features(notSolvedYet,config.get('Learn', 'Features'),config.getint('Settings', 'Cores'))            
         featureDict = normalize_featureDict(featureDict,maxVals,minVals)
-        """        
-        # TODO: HACK!
-        aaa = {}
-        for key,val in featureDict.iteritems():
-            key = key.replace('/home/daniel/TPTP','/scratch/kuehlwein')
-            aaa[key] = val
-        featureDict = aaa
-        
-        for i,p in enumerate(notSolvedYet):
-            p = p.replace('/home/daniel/TPTP','/scratch/kuehlwein')
-            notSolvedYet[i] = p
-        # HACK END
-        #"""
         dump_data((featureDict,minVals,maxVals),config.get('Learn', 'FeaturesFile') )
         logger.info('Done') 
     
