@@ -44,6 +44,10 @@ def expand_filename(filename):
 def get_tptp_plus_leo_features(filename):
     tptpFeatures = get_TPTP_features(filename)
     leoFeatures = get_leo_features(filename)
+    #print filename
+    #print tptpFeatures
+    #print leoFeatures
+    #print tptpFeatures+leoFeatures
     return tptpFeatures+leoFeatures  
 
 def get_leo_features(filename):
@@ -126,13 +130,20 @@ def get_e_features(filename):
     logger.warning(command)
     sys.exit(-1)
 
-def get_normalized_features(problemFile,featureStyle,minVals,maxVals):
+def pick_feature_function(featureStyle):
     if featureStyle == 'E':
         featureFunction = get_e_features
     elif featureStyle == 'LEO':
-        featureFunction = get_leo_features        
+        featureFunction = get_leo_features   
+    elif featureStyle == 'TPTP+LEO':
+        featureFunction = get_tptp_plus_leo_features             
     else:
         featureFunction = get_TPTP_features    
+    return featureFunction
+
+
+def get_normalized_features(problemFile,featureStyle,minVals,maxVals):
+    featureFunction = pick_feature_function(featureStyle)
     problemFeatures = featureFunction(problemFile)
     for i in range(len(problemFeatures)):
         if not maxVals[i] == minVals[i]:
@@ -149,15 +160,7 @@ def compute_features(problemsList,featureStyle,cores):
     setUp = False
     #IS = open(problemsFile,'r')
     #problems = [line.strip() for line in IS]
-    if featureStyle == 'E':
-        featureFunction = get_e_features
-    elif featureStyle == 'LEO':
-        featureFunction = get_leo_features
-    elif featureStyle == 'TPTP+LEO':
-        featureFunction = get_tptp_plus_leo_features
-    else:
-        featureFunction = get_TPTP_features
-    get_leo_features(problemsList[0])
+    featureFunction = pick_feature_function(featureStyle)    
     pool = Pool(processes = cores)            
     results = pool.map_async(featureFunction,problemsList)       
     pool.close()
