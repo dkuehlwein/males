@@ -10,6 +10,7 @@ import os,logging,sys,subprocess,shlex
 from numpy import mat
 from multiprocessing import Pool,cpu_count
 from cPickle import dump,load
+from TimeoutThread import processTimeout
 
 def load_data(fileName):
     IS = open(fileName)
@@ -44,11 +45,17 @@ def expand_filename(filename):
 def get_tptp_plus_leo_features(filename):
     tptpFeatures = get_TPTP_features(filename)
     leoFeatures = get_leo_features(filename)
-    #print filename
-    #print tptpFeatures
-    #print leoFeatures
-    #print tptpFeatures+leoFeatures
     return tptpFeatures+leoFeatures  
+
+def run_command(command,runTime = 10):
+    args = shlex.split(command)
+    p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,preexec_fn=os.setsid)    
+    with processTimeout(runTime, p.pid):
+        stdout, _stderr = p.communicate()        
+    resultcode = p.wait()
+    if resultcode < 0:
+        return ''
+    return stdout    
 
 def get_leo_features(filename):
     """ Return the leo features of a tptp problem """
@@ -56,15 +63,11 @@ def get_leo_features(filename):
     features = []
     filename = expand_filename(filename)
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    #command = "%s/bin/leo -a %s" % (path,filename)
-    command = "/home/daniel/Downloads/leo2/bin/leo -a %s" % filename
-    #print command
-    args = shlex.split(command)
-    p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout    
-    lines = p.readlines()
-    p.close()       
+    command = "%s/bin/leo -a %s" % (path,filename)
+    #command = "/home/daniel/Downloads/leo2/bin/leo -a %s" % filename
+    lines = run_command(command)    
     foundF = False
-    for line in lines:
+    for line in lines.split('\n'):        
         if line.startswith('#'):
             foundF = not foundF
             continue
@@ -72,12 +75,10 @@ def get_leo_features(filename):
             continue
         line = line.split('%')
         features.append(float(line[0]))
-    #print len(features)    
     if (len(features)> 0):
         return features
-    logger.warning('Could not compute features. Try running:')
-    logger.warning(command)
-    sys.exit(-1)
+    logger.warning('Could not compute features. Using 0-Features')
+    return [0.0] * 31
 
 def get_TPTP_features(filename):
     """ Return the TPTP features of a tptp problem """
@@ -87,18 +88,14 @@ def get_TPTP_features(filename):
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     command = "%s/bin/TPTP_features -i %s" % (path,filename)
     #print command
-    args = shlex.split(command)
-    p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout    
-    lines = p.readlines()
-    p.close()       
-    for line in lines:
+    lines = run_command(command)  
+    for line in lines.split('\n'):
         line = line.split()
         for word in line:
             try: 
                 features.append(float(word))
             except:
                 continue   
-    #print len(features)    
     if (len(features)> 0):
         return features
     logger.warning('Could not compute features. Try running:')
@@ -113,11 +110,8 @@ def get_e_features(filename):
     path = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     command = "%s/bin/classify_problem -caaaaaaaaaaaaa --tstp-in %s" % (path,filename)
     #print command
-    args = shlex.split(command)
-    p = subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout    
-    lines = p.readlines()
-    p.close()       
-    for line in lines:
+    lines = run_command(command)     
+    for line in lines.split('\n'):
         if not line.startswith(filename):
             continue
         line = line.split('(')[1]
@@ -194,4 +188,6 @@ def normalize_featureDict(featureDict,maxVals,minVals):
     return featureDict
 
 
-
+#get_leo_features('/home/daniel/TPTP/TPTP-v5.4.0/Problems/SWW/SWW478^3.p')
+#print get_TPTP_features('/home/daniel/TPTP/TPTP-v5.4.0/Problems/SWW/SWW478^3.p')
+#print get_e_features('/home/daniel/TPTP/TPTP-v5.4.0/Problems/SWW/SWW478^3.p')
